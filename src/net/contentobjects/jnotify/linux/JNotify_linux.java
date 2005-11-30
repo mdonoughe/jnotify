@@ -1,5 +1,5 @@
 /*******************************************************************************
- * JFS Hook library - Allow java applications to register to File system events.
+ * JNotify - Allow java applications to register to File system events.
  * 
  * Copyright (C) 2005 - Content Objects
  * 
@@ -20,7 +20,7 @@
  ******************************************************************************
  *
  * Content Objects, Inc., hereby disclaims all copyright interest in the
- * library `JFS Hook library' (a Java library for file system events). 
+ * library `JNotify' (a Java library for file system events). 
  * 
  * Yahali Sherman, 21 November 2005
  *    Content Objects, VP R&D.
