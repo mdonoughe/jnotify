@@ -29,9 +29,56 @@
  * Author : Omry Yadan
  ******************************************************************************/
  
-package net.contentobjects.jnotify.win32;
+package net.contentobjects.jnotify.test;
 
-public interface IWin32NotifyListener
+import java.io.IOException;
+
+import net.contentobjects.jnotify.IJNotify;
+import net.contentobjects.jnotify.JNotify;
+import net.contentobjects.jnotify.JNotifyListener;
+
+
+public class JNotifyTest
 {
-	public void notifyChange(int wd, int action, String rootPath, String filePath);
+
+	/**
+	 * @param args
+	 * @throws IOException 
+	 */
+	public static void main(String[] args) throws IOException
+	{
+		JNotify.get().addWatch("c:/test", IJNotify.FILE_MODIFIED, true, new JNotifyListener()
+		{
+		
+			public void fileRenamed(int wd, String rootPath, String oldName, String newName)
+			{
+				System.out.println("JNotifyTest.fileRenamed() : wd #" +wd + " root = " + rootPath + ", "  + oldName + " -> " + newName);
+			}
+		
+			public void fileModified(int wd, String rootPath, String name)
+			{
+				System.out.println("JNotifyTest.fileModified() : wd #" +wd + " root = " + rootPath + ", "  + name);
+			}
+		
+			public void fileDeleted(int wd, String rootPath, String name)
+			{
+				System.out.println("JNotifyTest.fileDeleted() : wd #" +wd + " root = " + rootPath + ", "  + name);
+			}
+		
+			public void fileCreated(int wd, String rootPath, String name)
+			{
+				System.out.println("JNotifyTest.fileCreated() : wd #" +wd + " root = " + rootPath + ", "  + name);
+			}
+		});
+		
+		
+		try
+		{
+			Thread.sleep(100000);
+		}
+		catch (InterruptedException e1)
+		{
+		}
+	}
+
 }

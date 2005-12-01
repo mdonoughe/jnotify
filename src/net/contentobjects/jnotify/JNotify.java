@@ -31,12 +31,15 @@
 
 package net.contentobjects.jnotify;
 
+import java.io.IOException;
+
 public class JNotify implements IJNotify
 {
 	private static IJNotify _instance;
 	
 	static 
 	{
+		
 		String osName = System.getProperty("os.name").toLowerCase();
 		if (osName.equals("linux"))
 		{
@@ -44,14 +47,27 @@ public class JNotify implements IJNotify
 		else
 		if (osName.startsWith("windows"))
 		{
+			try
+			{
+				_instance = (IJNotify) Class.forName("net.contentobjects.jnotify.win32.IJNotifyAdapterWin32").newInstance();
+			}
+			catch (Exception e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
 		else
 		{
-			throw new RuntimeException("Unsupported OS");
+			throw new RuntimeException("Unsupported OS : " + osName);
 		}
 	}
 	
-	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener)
+	public static IJNotify get()
+	{
+		return _instance;
+	}
+	
+	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener) throws IOException
 	{
 		return _instance.addWatch(path, mask, watchSubtree, listener);
 	}

@@ -34,6 +34,7 @@ package net.contentobjects.jnotify.win32.test;
 
 import java.io.IOException;
 
+import net.contentobjects.jnotify.win32.IWin32NotifyListener;
 import net.contentobjects.jnotify.win32.JNotify_win32;
 
 
@@ -45,9 +46,14 @@ public class TestJNotifyWin32
 	 */
 	public static void main(String[] args) throws IOException
 	{
-		int wd = JNotify_win32.addWatch("c:/test/", JNotify_win32.FILE_ACTION_ANY, true);
-		sleep1(1000);
-		int wd1 = JNotify_win32.addWatch("c:/Junk/", JNotify_win32.FILE_ACTION_ANY, true);
+		JNotify_win32.setNotifyListener(new IWin32NotifyListener()
+		{
+			public void notifyChange(int wd, int action, String rootPath, String filePath)
+			{
+				System.err.println(rootPath + " : notifyChange : " + filePath + " : " + action);
+			}
+		});
+		JNotify_win32.addWatch("c:/test/", JNotify_win32.FILE_NOTIFY_CHANGE_LAST_ACCESS, true);
 		sleep1(1000000);
 	}
 

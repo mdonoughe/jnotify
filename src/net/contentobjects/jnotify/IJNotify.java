@@ -31,8 +31,16 @@
 
 package net.contentobjects.jnotify;
 
+import java.io.IOException;
+
 public interface IJNotify
 {
-	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener);
-	public boolean removeWatch(int watchId);
+	public static final int FILE_CREATED 	= 0x1;
+	public static final int FILE_DELETED 	= 0x2;
+	public static final int FILE_MODIFIED 	= 0x4;
+	public static final int FILE_RENAMED 	= 0x8;
+	public static final int FILE_ANY 		= FILE_CREATED | FILE_DELETED | FILE_MODIFIED | FILE_RENAMED;
+	
+	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener) throws IOException;
+	public boolean removeWatch(int wd);
 }

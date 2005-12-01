@@ -34,11 +34,8 @@ package net.contentobjects.jnotify;
 
 public interface JNotifyListener
 {
-	public static final int FILE_ADDED = 0x00000001;
-	public static final int FILE_REMOVED = 0x00000002;
-	public static final int FILE_MODIFIED = 0x00000003;
-	public static final int FILE_RENAMED_OLD_NAME = 0x00000004;
-	public static final int FILE_RENAMED_NEW_NAME = 0x00000005;
-	
-	public void notify(String rootPath, String name, int wd, int action);
+	public void fileCreated(int wd, String rootPath, String name);
+	public void fileDeleted(int wd, String rootPath, String name);
+	public void fileModified(int wd, String rootPath, String name);
+	public void fileRenamed(int wd, String rootPath, String oldName, String newName);
 }

@@ -48,19 +48,30 @@ public class JNotify_win32
 		}
 	}
 	
+	public static final int FILE_NOTIFY_CHANGE_FILE_NAME   = 0x00000001;   
+	public static final int FILE_NOTIFY_CHANGE_DIR_NAME    = 0x00000002;   
+	public static final int FILE_NOTIFY_CHANGE_ATTRIBUTES  = 0x00000004;   
+	public static final int FILE_NOTIFY_CHANGE_SIZE        = 0x00000008;   
+	public static final int FILE_NOTIFY_CHANGE_LAST_WRITE  = 0x00000010;   
+	public static final int FILE_NOTIFY_CHANGE_LAST_ACCESS = 0x00000020;   
+	public static final int FILE_NOTIFY_CHANGE_CREATION    = 0x00000040;   
+	public static final int FILE_NOTIFY_CHANGE_SECURITY    = 0x00000100;  	
+	
+	// Event action ids
 	public static final int FILE_ACTION_ADDED = 0x00000001;
 	public static final int FILE_ACTION_REMOVED = 0x00000002;
 	public static final int FILE_ACTION_MODIFIED = 0x00000003;
 	public static final int FILE_ACTION_RENAMED_OLD_NAME = 0x00000004;
 	public static final int FILE_ACTION_RENAMED_NEW_NAME = 0x00000005;
 	
-	public static final int FILE_ACTION_ANY = FILE_ACTION_ADDED | FILE_ACTION_REMOVED
-			| FILE_ACTION_MODIFIED | FILE_ACTION_RENAMED_OLD_NAME | FILE_ACTION_RENAMED_NEW_NAME;
-	  
 	private static native int nativeInit();
 	private static native int nativeAddWatch(String path, long mask, boolean watchSubtree);
 	private static native String getErrorDesc(long errorCode); 
-	static native void nativeRemoveWatch(int wd);
+	private static native void nativeRemoveWatch(int wd);
+	
+	private static IWin32NotifyListener _notifyListener;
+	
+	
 	
 	public static int addWatch(String path, long mask, boolean watchSubtree) throws IOException
 	{
@@ -72,10 +83,29 @@ public class JNotify_win32
 		return wd;
 	}
 	
+	public static void removeWatch(int wd)
+	{
+		nativeRemoveWatch(wd);
+	}
+	
 	@SuppressWarnings("unused")
 	public static void callbackProcessEvent(int wd, int action, String rootPath, String filePath)
 	{
-		//System.out.println("callbackProcessEvent : wd " + wd + ", action " + action + ", root " + rootPath + ", file " + filePath);
-		System.err.println("is anybody home?");
+		if (_notifyListener != null)
+		{
+			_notifyListener.notifyChange(wd, action, rootPath, filePath);
+		}
+	}
+	
+	public static void setNotifyListener(IWin32NotifyListener notifyListener)
+	{
+		if (_notifyListener == null)
+		{
+			_notifyListener = notifyListener;
+		}
+		else
+		{
+			throw new RuntimeException("Notify listener is already set. multiple notify listeners are not supported.");
+		}
 	}
 }
