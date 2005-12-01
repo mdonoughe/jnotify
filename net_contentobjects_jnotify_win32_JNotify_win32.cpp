@@ -41,6 +41,16 @@
 #include "Lock.h"
 
 Win32FSHook *_win32FSHook;
+
+JavaVM *_jvm = 0;
+
+enum INIT_STATE
+{
+	NOT_INITIALIZED,
+	INITIALIZED,
+	FAILED
+} _initialized = NOT_INITIALIZED;
+
 JNIEnv *_env = 0;
 jclass _clazz = 0;
 jmethodID _callback = 0;
@@ -49,7 +59,43 @@ void getErrorDescription(int errorCode, WCHAR *buffer, int len);
 
 void ChangeCallbackImpl(int watchID, int action, const WCHAR* rootPath, const WCHAR* filePath)
 {
-	log("Calling Elvis : %d %d", _env, _clazz);
+	static Lock lock;
+	lock.lock();
+	if (_initialized == NOT_INITIALIZED)
+	{
+		bool failed = false;
+		_jvm->AttachCurrentThread((void **)&_env, NULL);
+		char className[] = "net/contentobjects/jnotify/win32/JNotify_win32";
+		_clazz = _env->FindClass(className);
+		if (_clazz == NULL)
+		{
+			log("class %s not found ", className);
+			failed = true;
+		}
+		
+		if (!failed)
+		{
+		    _callback = _env->GetStaticMethodID(_clazz, "callbackProcessEvent", "(IILjava/lang/String;Ljava/lang/String;)V");
+		    if (_callback == NULL) 
+		    {
+				log("callbackProcessEvent not found");
+				failed = true;
+		    }
+		}
+	    
+	    if (!failed)
+	    {
+	    	_initialized = INITIALIZED;
+	    }
+	    else
+	    {
+	    	_initialized = FAILED;
+	    }
+	}
+	lock.unlock();
+	if (_initialized != INITIALIZED) return;
+	
+	
     jstring jRootPath = _env->NewString((jchar*)rootPath, wcslen(rootPath));
     jstring jFilePath = _env->NewString((jchar*)filePath, wcslen(filePath));
 	_env->CallStaticVoidMethod(_clazz, _callback, watchID, action, jRootPath, jFilePath);
@@ -86,21 +132,6 @@ JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_win32_JNotify_1win32_nati
 JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_win32_JNotify_1win32_nativeAddWatch
   (JNIEnv *env, jclass clazz, jstring path, jlong notifyFilter, jboolean watchSubdir)
 {
-	static Lock lock;
-	lock.lock();
-	if (_env == 0)
-	{
-		_env = env;
-		_clazz = clazz;
-	    _callback = _env->GetStaticMethodID(_clazz, "callbackProcessEvent", "(IILjava/lang/String;Ljava/lang/String;)V");
-	    if (_callback == NULL) 
-	    {
-			log("callbackProcessEvent not found!  \n");
-			return -1;
-	    }
-	}
-	lock.unlock();
-	
 	const WCHAR *cstr = (const WCHAR*)env->GetStringChars(path, NULL);
     if (cstr == NULL) 
     {
@@ -171,4 +202,10 @@ void getErrorDescription(int errorCode, WCHAR *buffer, int len)
 	LocalFree( lpMsgBuf );
 	
 	lock.unlock();
+}
+
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
+{
+	_jvm = jvm;
+	return JNI_VERSION_1_2;
 }
