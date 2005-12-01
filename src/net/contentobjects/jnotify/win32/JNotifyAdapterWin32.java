@@ -38,11 +38,11 @@ import java.util.Hashtable;
 import net.contentobjects.jnotify.IJNotify;
 import net.contentobjects.jnotify.JNotifyListener;
 
-public class IJNotifyAdapterWin32 implements IJNotify
+public class JNotifyAdapterWin32 implements IJNotify
 {
 	private Hashtable<Integer, WatchData> _id2Data;
 
-	public IJNotifyAdapterWin32()
+	public JNotifyAdapterWin32()
 	{
 		JNotify_win32.setNotifyListener(new IWin32NotifyListener()
 		{
