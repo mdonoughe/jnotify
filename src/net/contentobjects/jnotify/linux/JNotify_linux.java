@@ -31,9 +31,7 @@
  
 package net.contentobjects.jnotify.linux;
 
-import java.util.Hashtable;
-
-/** TODO : added by omry at 16/11/2005 : clean watch data from hashtable once a file is deleted or unmounted.*/
+import net.contentobjects.jnotify.JNotifyException;
 
 public class JNotify_linux
 {
@@ -87,7 +85,7 @@ public class JNotify_linux
 			| IN_CLOSE_NOWRITE | IN_OPEN | IN_MOVED_FROM | IN_MOVED_TO | IN_DELETE | IN_CREATE | IN_DELETE_SELF);
 	
 	
-	private static Hashtable<Integer, WatchData> _wd2watchData = new Hashtable<Integer, WatchData>();
+	private static INotifyListener _notifyListener;
 
 	private static native int nativeInit();
 	
@@ -97,22 +95,22 @@ public class JNotify_linux
 	
 	private native static int nativeNotifyLoop();
 	
+	private static native String getErrorDesc(long errorCode); 
 	
-	public static int addWatch(String path, int mask, INotifyListener listener)
+	
+	public static int addWatch(String path, int mask) throws JNotifyException
 	{
 		int wd = nativeAddWatch(path, mask);
-		if (wd != -1)
+		if (wd < 0)
 		{
-			_wd2watchData.put(wd, new WatchData(mask, path, listener));
+			throw new JNotifyException_linux(getErrorDesc(-wd), -wd);
 		}
 		return wd;
 	}
 
 	public static int removeWatch(int wd)
 	{
-		int res = nativeRemoveWatch(wd);
-		_wd2watchData.remove(wd);
-		return res;
+		return nativeRemoveWatch(wd);
 	}
 	
 	private static void init()
@@ -133,31 +131,21 @@ public class JNotify_linux
 	@SuppressWarnings("unused")
 	private static void callbackProcessEvent(String name, int wd, int mask, int cookie)
 	{
-		WatchData wdata = _wd2watchData.get(wd);
-		if (wdata == null)
+		if (_notifyListener != null)
 		{
-			System.err.println("Warning : event with an unknown wd");
+			_notifyListener.notify(name, wd, mask, cookie);
+		}
+	}
+
+	public static void setNotifyListener(INotifyListener notifyListener)
+	{
+		if (_notifyListener == null)
+		{
+			_notifyListener = notifyListener;
 		}
 		else
 		{
-			wdata._listener.notify(wdata._path , name,wd,mask,cookie);
+			throw new RuntimeException("Notify listener is already set. multiple notify listeners are not supported.");
 		}
-	}
-	
-	
-	
-	private static class WatchData
-	{
-		String _path;
-		int _mask;
-		INotifyListener _listener;
-		
-		public WatchData(int mask, String path, INotifyListener listener)
-		{
-			_mask = mask;
-			_path = path;
-			_listener = listener;
-		}
-	}
-	
+	}	
 }

@@ -31,22 +31,36 @@
  
 package net.contentobjects.jnotify.linux.test;
 
+import java.io.IOException;
+
 import net.contentobjects.jnotify.linux.JNotify_linux;
 import net.contentobjects.jnotify.linux.INotifyListener;
 
 
 public class TestJNotifyLinux
 {
-	public static void main(String[] args)
+	public static void main(String[] args) throws IOException
 	{
 		System.err.println("--- staring... ");
-		
-		JNotify_linux.addWatch("/home/omry", JNotify_linux.IN_MODIFY, new INotifyListener()
+		JNotify_linux.setNotifyListener(new INotifyListener()
 		{
-			public void notify(String rootPath, String name, int wd, int mask, int cookie)
+			public void notify(String name, int wd1, int mask, int cookie)
 			{
-				System.err.println("rootpath " + rootPath + " , name " + name + ", wd " + wd + ", mask "+ mask + " , cookie " + cookie);
+				System.err.println("name " + name + ", wd " + wd1 + ", mask "+ mask + " , cookie " + cookie);
 			}
 		});
+		
+		
+		int wd = JNotify_linux.addWatch("/home/om1ry", JNotify_linux.IN_MODIFY);
+		System.err.println("wd : " + wd);
+		
+		try
+		{
+			Thread.sleep(50000);
+		}
+		catch (InterruptedException e1)
+		{
+			// nop
+		}
 	}
 }

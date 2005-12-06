@@ -32,10 +32,10 @@
 
 package net.contentobjects.jnotify.win32;
 
-import java.io.IOException;
 import java.util.Hashtable;
 
 import net.contentobjects.jnotify.IJNotify;
+import net.contentobjects.jnotify.JNotifyException;
 import net.contentobjects.jnotify.JNotifyListener;
 
 public class JNotifyAdapterWin32 implements IJNotify
@@ -55,7 +55,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 	}
 
 	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener)
-		throws IOException
+		throws JNotifyException
 	{
 		// register to everything on system level.
 		int wd = JNotify_win32.addWatch(path, JNotify_win32.FILE_NOTIFY_CHANGE_SECURITY
@@ -124,6 +124,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 				if (action == JNotify_win32.FILE_ACTION_REMOVED &&  (mask & mapped) != 0)
 				{
 					watchData._notifyListener.fileDeleted(wd, rootPath, filePath);
+					_id2Data.remove(wd);
 				}
 				else
 				if (action == JNotify_win32.FILE_ACTION_RENAMED_OLD_NAME &&  (mask & mapped) != 0)
@@ -135,6 +136,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 				{
 					watchData._notifyListener.fileRenamed(wd, rootPath, watchData.renameOldName, filePath);
 					watchData.renameOldName = null;
+					_id2Data.remove(wd);
 				}
 				
 			}

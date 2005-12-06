@@ -31,7 +31,6 @@
 
 package net.contentobjects.jnotify;
 
-import java.io.IOException;
 
 public class JNotify implements IJNotify
 {
@@ -43,6 +42,14 @@ public class JNotify implements IJNotify
 		String osName = System.getProperty("os.name").toLowerCase();
 		if (osName.equals("linux"))
 		{
+			try
+			{
+				_instance = (IJNotify) Class.forName("net.contentobjects.jnotify.linux.JNotifyAdapterLinux").newInstance();
+			}
+			catch (Exception e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
 		else
 		if (osName.startsWith("windows"))
@@ -67,7 +74,7 @@ public class JNotify implements IJNotify
 		return _instance;
 	}
 	
-	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener) throws IOException
+	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener) throws JNotifyException
 	{
 		return _instance.addWatch(path, mask, watchSubtree, listener);
 	}

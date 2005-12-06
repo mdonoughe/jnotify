@@ -47,9 +47,8 @@ public class JNotifyTest
 	 */
 	public static void main(String[] args) throws IOException
 	{
-		JNotify.get().addWatch("c:/test", IJNotify.FILE_MODIFIED, true, new JNotifyListener()
+		int watchID = JNotify.get().addWatch("/home/omry/tmp", IJNotify.FILE_ANY, true, new JNotifyListener()
 		{
-		
 			public void fileRenamed(int wd, String rootPath, String oldName, String newName)
 			{
 				System.out.println("JNotifyTest.fileRenamed() : wd #" +wd + " root = " + rootPath + ", "  + oldName + " -> " + newName);
@@ -71,14 +70,21 @@ public class JNotifyTest
 			}
 		});
 		
-		
 		try
 		{
-			Thread.sleep(100000);
+			Thread.sleep(1000000);
 		}
 		catch (InterruptedException e1)
 		{
 		}
+		
+		// to remove watch:
+		boolean res = JNotify.get().removeWatch(watchID);
+		if (!res)
+		{
+			// failed to remove
+		}
+		
 	}
 
 }

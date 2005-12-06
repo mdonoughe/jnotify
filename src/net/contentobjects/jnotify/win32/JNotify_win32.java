@@ -33,7 +33,7 @@
 
 package net.contentobjects.jnotify.win32;
 
-import java.io.IOException;
+import net.contentobjects.jnotify.JNotifyException;
 
 
 public class JNotify_win32
@@ -73,12 +73,12 @@ public class JNotify_win32
 	
 	
 	
-	public static int addWatch(String path, long mask, boolean watchSubtree) throws IOException
+	public static int addWatch(String path, long mask, boolean watchSubtree) throws JNotifyException
 	{
 		int wd = nativeAddWatch(path, mask, watchSubtree);
 		if (wd < 0)
 		{
-			throw new IOException(getErrorDesc(-wd));
+			throw new JNotifyException_win32(getErrorDesc(-wd), -wd);
 		}
 		return wd;
 	}
