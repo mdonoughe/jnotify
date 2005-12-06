@@ -79,6 +79,7 @@ extern "C" {
 #define net_contentobjects_jnotify_linux_JNotify_linux_IN_ONESHOT -2147483648L
 #undef net_contentobjects_jnotify_linux_JNotify_linux_IN_ALL_EVENT
 #define net_contentobjects_jnotify_linux_JNotify_linux_IN_ALL_EVENT 2047L
+
 /*
  * Class:     net_contentobjects_jnotify_linux_JNotify_linux
  * Method:    nativeInit
@@ -110,6 +111,14 @@ JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nati
  */
 JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nativeNotifyLoop
   (JNIEnv *, jclass);
+
+/*
+ * Class:     net_contentobjects_jnotify_linux_JNotify_linux
+ * Method:    getErrorDesc
+ * Signature: (J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_getErrorDesc
+  (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus
 }

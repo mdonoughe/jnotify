@@ -61,7 +61,7 @@ JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nati
 	return (jint)init();
 }
 
-/*
+/*plog
  * Class:     net_contentobjects_jnotify_linux_JNotify_linux
  * Method:    nativeAddWatch
  * Signature: (Ljava/lang/String;I)I
@@ -101,7 +101,6 @@ JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nati
 JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nativeNotifyLoop
   (JNIEnv *env, jclass clazz)
 {
-	printf("notify loop\n");
 	return runLoop(env, clazz);
 }
 
@@ -122,7 +121,6 @@ int init()
 	printf("init()\n");
 	if (fd != -1)
 	{
-		printf("already initialized\n");
 		return 0;
 	}
 	
@@ -136,7 +134,6 @@ int init()
     {
     	return 0;
     }
-    
 }
 
 /**
@@ -147,9 +144,11 @@ int init()
 int add_watch(char *path, __u32 mask)
 {
     int wd = inotify_add_watch (fd, path, mask);
+    int lastErr = errno;
 	if (wd == -1)
 	{
 		perror("inotify_add_watch");
+		return -lastErr;
 	}
 	return wd;
 }
@@ -178,7 +177,6 @@ int runLoop(JNIEnv *env, jclass clazz)
 {
 	if (fd == -1)
 	{
-		printf("Not initialized");
 		return 1;
 	}
 	
@@ -219,7 +217,8 @@ void dispatch(JNIEnv *env, jclass clazz, struct inotify_event *event)
      jmethodID mid =   (*env)->GetStaticMethodID(env, clazz, "callbackProcessEvent", "(Ljava/lang/String;III)V");
      if (mid == NULL) 
      {
-		 printf("callbackProcessEvent not found!  \n");
+		 printf("callbackProcessEvent not found! \n");
+		 fflush(stdout);
          return;  /* method not found */
      }
      
@@ -227,3 +226,23 @@ void dispatch(JNIEnv *env, jclass clazz, struct inotify_event *event)
 	//callbackProcessEvent(String name, int wd, int mask, int cookie)        	
 }
 
+
+/*
+ * Class:     net_contentobjects_jnotify_linux_JNotify_linux
+ * Method:    getErrorDesc
+ * Signature: (J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_getErrorDesc
+  (JNIEnv *env, jclass clazz, jlong errorCode)
+{
+	const char* err;
+	if (errorCode < sys_nerr)
+	{
+		err = sys_errlist[errorCode];
+	}
+	else
+	{
+		err = "Unknown error\0";
+	}
+	return (*env)->NewStringUTF(env, err);
+}
