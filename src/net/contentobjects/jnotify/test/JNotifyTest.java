@@ -47,7 +47,10 @@ public class JNotifyTest
 	 */
 	public static void main(String[] args) throws IOException
 	{
-		int watchID = JNotify.get().addWatch("/home/omry/tmp", IJNotify.FILE_ANY, true, new JNotifyListener()
+		String path = "/home/omry/tmp";
+		int mask = IJNotify.FILE_CREATED | IJNotify.FILE_DELETED | IJNotify.FILE_MODIFIED | IJNotify.FILE_RENAMED;
+		boolean watchSubtree = true;
+		int watchID = JNotify.get().addWatch(path, mask, watchSubtree, new JNotifyListener()
 		{
 			public void fileRenamed(int wd, String rootPath, String oldName, String newName)
 			{
