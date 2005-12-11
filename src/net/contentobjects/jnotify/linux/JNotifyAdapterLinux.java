@@ -194,8 +194,10 @@ public class JNotifyAdapterLinux implements IJNotify
 		if (removeLinuxWatch)
 		{
 			int res = JNotify_linux.removeWatch(data._linuxWd);
-			// if (res == ?) {}
-			/** TODO : added by omry at Dec 11, 2005 : check return value*/
+			if (res == -1)
+			{
+				System.out.println("JNotifyAdapterLinux: warning, error removing linux watch " + data._linuxWd);
+			}
 		}
 		_linuxWd2Wd.remove(data._linuxWd);
 		_id2Data.remove(data._wd);
