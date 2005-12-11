@@ -41,7 +41,8 @@ import net.contentobjects.jnotify.JNotifyException;
 import net.contentobjects.jnotify.JNotifyListener;
 
 
-/** TODO : added by omry at Dec 6, 2005 : Debug recursive listening.*/
+/** TODO : added by omry at Dec 6, 2005 : Unit test recursive listening.*/
+/** TODO : added by omry at Dec 11, 2005 : Handle move events*/
 
 public class JNotifyAdapterLinux implements IJNotify
 {
@@ -96,30 +97,34 @@ public class JNotifyAdapterLinux implements IJNotify
 			linuxMask |= JNotify_linux.IN_CREATE;	
 		}
 
-
-		
-		int wd = _watchIDCounter++;
-		int linuxWd = JNotify_linux.addWatch(path, linuxMask);
-		WatchData watchData = new WatchData(path, wd, linuxWd, mask, linuxMask, watchSubtree, listener);
-		_linuxWd2Wd.put(linuxWd, wd);
-		_id2Data.put(wd, watchData);
+		WatchData watchData = createWatch(true, path, mask, linuxMask, watchSubtree, listener);
 		if (watchSubtree)
 		{
 			try
 			{
-				registerToSubTree(true,watchData, new File(path));
+				File file = new File(path);
+				registerToSubTree(true,watchData, file);
 			}
 			catch (JNotifyException e)
 			{
 				// cleanup
-				removeWatch(wd);
+				removeWatch(watchData._wd, true);
 				// and throw.
 				throw e;
 			}
 		}
-		return wd;
+		return watchData._wd;
 	}
 	
+	private WatchData createWatch(boolean user,String path, int mask, int linuxMask, boolean watchSubtree, JNotifyListener listener) throws JNotifyException
+	{
+		int wd = _watchIDCounter++;
+		int linuxWd = JNotify_linux.addWatch(path, linuxMask);
+		WatchData watchData = new WatchData(user, path, wd, linuxWd, mask, linuxMask, watchSubtree, listener);
+		_linuxWd2Wd.put(linuxWd, wd);
+		_id2Data.put(wd, watchData);
+		return watchData;
+	}
 	
 
 	private void registerToSubTree(boolean isRoot, WatchData watchData, File root) throws JNotifyException
@@ -132,7 +137,10 @@ public class JNotifyAdapterLinux implements IJNotify
 			{
 				try
 				{
-					watchSubdir(watchData, rootDir);
+					String path = root.getAbsolutePath();
+					System.out.println("Registering sub tree " + path + " under watch " + watchData._wd);
+					WatchData subWatch = createWatch(false, path, watchData._mask, watchData._linuxMask, watchData._watchSubtree, null);
+					watchData.addSubwatch(subWatch);
 				}
 				catch (JNotifyException e)
 				{
@@ -141,7 +149,7 @@ public class JNotifyAdapterLinux implements IJNotify
 					{
 						throw e;
 					}
-					// try subtree anyway..
+					// else, on any other error, try subtree anyway..
 				}
 			}
 			
@@ -157,33 +165,43 @@ public class JNotifyAdapterLinux implements IJNotify
 		}
 	}
 
-	private void watchSubdir(WatchData watchData, String rootDir) throws JNotifyException
-	{
-		System.err.println("Registering sub tree " + rootDir + " under watch " + watchData._wd);
-		int linuxWd = JNotify_linux.addWatch(rootDir, watchData._linuxMask);
-		_linuxWd2Wd.put(linuxWd, watchData._wd);
-		watchData._linuxWd.add(linuxWd);
-	}
-
 	public boolean removeWatch(int wd)
+	{
+		return removeWatch(wd, true);
+	}
+	
+	private boolean removeWatch(int wd, boolean removeLinuxWatch)
 	{
 		synchronized (_id2Data)
 		{
 			if (_id2Data.containsKey(wd))
 			{
-				WatchData data = _id2Data.remove(wd);
-				for (int i = 0; i < data._linuxWd.size(); i++)
-				{
-					int linuxWd = data._linuxWd.get(i);
-					_linuxWd2Wd.remove(linuxWd);
-					JNotify_linux.removeWatch(linuxWd);
-				}
+				WatchData watchData = _id2Data.remove(wd);
+				unwatch(watchData, removeLinuxWatch);
 				return true;
 			}
 			else
 			{
 				return false;
 			}
+		}
+	}
+
+	
+	
+	private void unwatch(WatchData data, boolean removeLinuxWatch)
+	{
+		if (removeLinuxWatch)
+		{
+			int res = JNotify_linux.removeWatch(data._linuxWd);
+			// if (res == ?) {}
+			/** TODO : added by omry at Dec 11, 2005 : check return value*/
+		}
+		_linuxWd2Wd.remove(data._linuxWd);
+		_id2Data.remove(data._wd);
+		for (int i = 0; i < data._subWatches.size(); i++)
+		{
+			unwatch(data._subWatches.get(i), true);
 		}
 	}
 
@@ -195,11 +213,13 @@ public class JNotifyAdapterLinux implements IJNotify
 			if (iwd == null)
 			{
 				// This happens if an exception is thrown because used too many watches. 
-				System.err.println("JNotifyAdapterLinux: warning, recieved event for an unregisted LinuxWD "+ linuxWd +" ignoring...");
+				System.out.println("JNotifyAdapterLinux: warning, recieved event for an unregisted LinuxWD "+ linuxWd +" ignoring...");
+				debugLinux(null, name, linuxMask);
 				return;
 			}
 			
 			WatchData watchData = _id2Data.get(iwd);
+			debugLinux(watchData, name, linuxMask);
 			if (watchData != null)
 			{
 				if ((linuxMask & JNotify_linux.IN_CREATE) != 0)
@@ -216,7 +236,7 @@ public class JNotifyAdapterLinux implements IJNotify
 						String newDirPath = new File(watchData._path, name).getAbsolutePath();
 						try
 						{
-							watchSubdir(watchData, newDirPath);
+							createWatch(false, newDirPath, watchData._mask, watchData._linuxMask, watchData._watchSubtree, watchData._notifyListener);
 						}
 						catch (JNotifyException e)
 						{
@@ -225,23 +245,18 @@ public class JNotifyAdapterLinux implements IJNotify
 					}
 				}
 				else
-				if ((linuxMask & JNotify_linux.IN_DELETE)  != 0 || (linuxMask & JNotify_linux.IN_DELETE_SELF) != 0)
+				if ((linuxMask & JNotify_linux.IN_IGNORED) != 0)
+				{
+					removeWatch(iwd, false);
+				}
+//				else
+//				if ((linuxMask & JNotify_linux.IN_DELETE_SELF) != 0)
+//				{
+//				}
+				else
+				if ((linuxMask & JNotify_linux.IN_DELETE)  != 0)
 				{
 					watchData._notifyListener.fileDeleted(watchData._wd, watchData._path, name);
-					
-					// only remove watch if the actaul listened file was removed. 
-					// (and not a file on a sub tree). 
-					if ((linuxMask & JNotify_linux.IN_DELETE_SELF) != 0)
-					{
-						removeWatch(iwd);
-					}
-					
-					// if this is a subwatch on a subtree, stop watching it.
-					if (watchData._watchSubtree)
-					{
-						_linuxWd2Wd.remove(linuxWd);
-						JNotify_linux.removeWatch(linuxWd);
-					}
 				}
 				else
 				if ((linuxMask & JNotify_linux.IN_ATTRIB) != 0 || (linuxMask & JNotify_linux.IN_MODIFY) != 0)
@@ -263,17 +278,54 @@ public class JNotifyAdapterLinux implements IJNotify
 			}
 			else
 			{
-				System.err.println("JNotifyAdapterLinux: warning, recieved event for an unregisted WD " +  iwd + ". ignoring...");
+				System.out.println("JNotifyAdapterLinux: warning, recieved event for an unregisted WD " +  iwd + ". ignoring...");
 			}
 		}
 	}
 
+	private void debugLinux(WatchData watchData, String name, int linuxMask)
+	{
+		boolean IN_ACCESS = (linuxMask & JNotify_linux.IN_ACCESS) != 0;
+		boolean IN_MODIFY = (linuxMask & JNotify_linux.IN_MODIFY) != 0;
+		boolean IN_ATTRIB = (linuxMask & JNotify_linux.IN_ATTRIB) != 0;
+		boolean IN_CLOSE_WRITE = (linuxMask & JNotify_linux.IN_CLOSE_WRITE) != 0;
+		boolean IN_CLOSE_NOWRITE = (linuxMask & JNotify_linux.IN_CLOSE_NOWRITE) != 0;
+		boolean IN_OPEN = (linuxMask & JNotify_linux.IN_OPEN) != 0;
+		boolean IN_MOVED_FROM = (linuxMask & JNotify_linux.IN_MOVED_FROM) != 0;
+		boolean IN_MOVED_TO = (linuxMask & JNotify_linux.IN_MOVED_TO) != 0;
+		boolean IN_CREATE = (linuxMask & JNotify_linux.IN_CREATE) != 0;
+		boolean IN_DELETE = (linuxMask & JNotify_linux.IN_DELETE) != 0;
+		boolean IN_DELETE_SELF = (linuxMask & JNotify_linux.IN_DELETE_SELF) != 0;
+		boolean IN_MOVE_SELF = (linuxMask & JNotify_linux.IN_MOVE_SELF) != 0;
+		boolean IN_UNMOUNT = (linuxMask & JNotify_linux.IN_UNMOUNT) != 0;
+		boolean IN_Q_OVERFLOW = (linuxMask & JNotify_linux.IN_Q_OVERFLOW) != 0;
+		boolean IN_IGNORED = (linuxMask & JNotify_linux.IN_IGNORED) != 0;
+		String s ="";
+		if (IN_ACCESS) s += "IN_ACCESS, ";
+		if (IN_MODIFY) s += "IN_MODIFY, ";
+		if (IN_ATTRIB) s += "IN_ATTRIB, ";
+		if (IN_CLOSE_WRITE) s += "IN_CLOSE_WRITE, ";
+		if (IN_CLOSE_NOWRITE) s += "IN_CLOSE_NOWRITE, ";
+		if (IN_OPEN) s += "IN_OPEN, ";
+		if (IN_MOVED_FROM) s += "IN_MOVED_FROM, ";
+		if (IN_MOVED_TO) s += "IN_MOVED_TO, ";
+		if (IN_CREATE) s += "IN_CREATE, ";
+		if (IN_DELETE) s += "IN_DELETE, ";
+		if (IN_DELETE_SELF) s += "IN_DELETE_SELF, ";
+		if (IN_MOVE_SELF) s += "IN_MOVE_SELF, ";
+		if (IN_UNMOUNT) s += "IN_UNMOUNT, ";
+		if (IN_Q_OVERFLOW) s += "IN_Q_OVERFLOW, ";
+		if (IN_IGNORED) s += "IN_IGNORED, ";
+		System.out.println(s + " : " +(watchData != null ? watchData : name));
+	}
+
 	private static class WatchData
 	{
+		boolean _user;
 		int _wd;
-		// if watching subtree, we possibly watching more than one directory.
-		private ArrayList<Integer> _linuxWd;
-		int _mask;
+		private int _linuxWd;
+		private ArrayList<WatchData> _subWatches;
+		int _mask; 
 		int _linuxMask;
 		boolean _watchSubtree;
 		JNotifyListener _notifyListener;
@@ -281,16 +333,33 @@ public class JNotifyAdapterLinux implements IJNotify
 		Hashtable<Integer, String> _cookieToOldName = new Hashtable();
 		String _path;
 
-		WatchData(String path, int wd, int linuxWd, int mask, int linuxMask, boolean watchSubtree, JNotifyListener listener)
+		WatchData(boolean user, String path, int wd, int linuxWd, int mask, int linuxMask, boolean watchSubtree, JNotifyListener listener)
 		{
+			_user = user;
+			_subWatches = new ArrayList();
 			_path = path;
 			_wd = wd;
 			_linuxMask = linuxMask;
-			_linuxWd = new ArrayList();
-			_linuxWd.add(linuxWd);
+			_linuxWd = linuxWd;
 			_mask = mask;
 			_watchSubtree = watchSubtree;
 			_notifyListener = listener;
+		}
+		
+		void remveSubwatch(WatchData subWatch)
+		{
+			_subWatches.remove(subWatch);
+		}
+
+		void addSubwatch(WatchData subWatch)
+		{
+			_subWatches.add(subWatch);
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "WatchData " + _path + ", wd=" +  _wd + ", linuxWd=" + _linuxWd  + (_watchSubtree ? ", recursive" :"") + (_user ? ", user" : ", auto");
 		}
 	}
 }
