@@ -37,7 +37,7 @@ class Event
 	
 	public static Event renamed(String from, String to)
 	{
-		return new Event(ActionEnum.DELETED, -1,"UNKNOWN",from, to);
+		return new Event(ActionEnum.RENAMED, -1,"UNKNOWN",from, to);
 	}	
 	
 	Event(Event.ActionEnum action, int wd, String path, String name)

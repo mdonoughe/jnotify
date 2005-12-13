@@ -40,7 +40,7 @@ class Command
 	
 	public static Command rename(String from, String to)
 	{
-		return new Command(Action.DELETE, from, to);
+		return new Command(Action.RENAME, from, to);
 	}
 	
 	private Command(Command.Action action, String path, String path2)

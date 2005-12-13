@@ -40,6 +40,9 @@ public class UnitTest extends TestCase
 		// modify it.
 		commands.add(Command.modify("1"));
 		events.add(Event.modified("1"));
+		// rename it
+		commands.add(Command.rename("1","2"));
+		events.add(Event.renamed("1","2"));
 		
 		performTest(IJNotify.FILE_ANY, false, commands, events);
 	}
@@ -56,7 +59,7 @@ public class UnitTest extends TestCase
 		testRoot.mkdirs();
 
 		final ArrayList<Event> events = new ArrayList();
-		JNotify.get().addWatch(testRoot.getName(), mask, watchSubtree, new JNotifyListener()
+		int wd2 = JNotify.get().addWatch(testRoot.getName(), mask, watchSubtree, new JNotifyListener()
 		{
 
 			public void fileRenamed(int wd, String rootPath, String oldName, String newName)
@@ -119,6 +122,8 @@ public class UnitTest extends TestCase
 		{
 			assertMatch(extectedEvents.get(i),events.get(i));
 		}
+		
+		JNotify.get().removeWatch(wd2);
 		
 		deleteDirectory(testRoot);
 
