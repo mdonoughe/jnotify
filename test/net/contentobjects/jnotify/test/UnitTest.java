@@ -101,6 +101,7 @@ public class UnitTest extends TestCase
 				System.out.println("Error performing:");
 				System.out.println(command);
 				e.printStackTrace();
+				throw e;
 			}
 		}
 
