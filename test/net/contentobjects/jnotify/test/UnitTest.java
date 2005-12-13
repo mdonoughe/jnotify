@@ -22,19 +22,37 @@ public class UnitTest extends TestCase
 		ArrayList<Command> commands = new ArrayList();
 		ArrayList<Event> events = new ArrayList();
 
-		commands.add(Command.create("test"));
-		commands.add(Command.create("test/2"));
+		// create a dir
+		commands.add(Command.createDir("test"));
+		// and a file in that dir
+		commands.add(Command.createFile("test/2"));
+		// since we don't listen recuresvily, we should only get one event for this.
 		events.add(Event.created("test"));
-		performTest(IJNotify.FILE_CREATED, false, commands, events);
+		// delete the inner file. this should generate no event
+		commands.add(Command.delete("test/2"));
+		// delete the dir
+		commands.add(Command.delete("test"));
+		// this should generate an event.
+		events.add(Event.deleted("test"));
+		// create another file
+		commands.add(Command.createFile("1"));
+		events.add(Event.created("1"));
+		// modify it.
+		commands.add(Command.modify("1"));
+		events.add(Event.modified("1"));
+		
+		performTest(IJNotify.FILE_ANY, false, commands, events);
 	}
 
 	void performTest(int mask, boolean watchSubtree, ArrayList<Command> commands,
 		ArrayList<Event> extectedEvents) throws IOException
 	{
 		String rootDir = "$$$_TEST_$$$";
+		
 		File testRoot = new File(rootDir);
 		// make sure the dir is empty.
 		deleteDirectory(testRoot);
+		
 		testRoot.mkdirs();
 
 		final ArrayList<Event> events = new ArrayList();
@@ -43,22 +61,30 @@ public class UnitTest extends TestCase
 
 			public void fileRenamed(int wd, String rootPath, String oldName, String newName)
 			{
-				events.add(new Event(Event.ActionEnum.RENAMED, wd, rootPath, oldName, newName));
+				Event event = new Event(Event.ActionEnum.RENAMED, wd, rootPath, oldName, newName);
+				System.out.println(event);
+				events.add(event);
 			}
 
 			public void fileModified(int wd, String rootPath, String name)
 			{
-				events.add(new Event(Event.ActionEnum.MODIFIED, wd, rootPath, name));
+				Event event = new Event(Event.ActionEnum.MODIFIED, wd, rootPath, name);
+				System.out.println(event);
+				events.add(event);
 			}
 
 			public void fileDeleted(int wd, String rootPath, String name)
 			{
-				events.add(new Event(Event.ActionEnum.DELETED, wd, rootPath, name));
+				Event event = new Event(Event.ActionEnum.DELETED, wd, rootPath, name);
+				System.out.println(event);
+				events.add(event);
 			}
 
 			public void fileCreated(int wd, String rootPath, String name)
 			{
-				events.add(new Event(Event.ActionEnum.CREATED, wd, rootPath, name));
+				Event event = new Event(Event.ActionEnum.CREATED, wd, rootPath, name);
+				System.out.println(event);
+				events.add(event);
 			}
 		});
 
@@ -67,7 +93,8 @@ public class UnitTest extends TestCase
 			Command command = commands.get(i);
 			try
 			{
-				command.perform(testRoot);
+				boolean perform = command.perform(testRoot);
+				assertTrue("Error performing command " + command, perform);
 			}
 			catch (IOException e)
 			{
@@ -79,7 +106,7 @@ public class UnitTest extends TestCase
 
 		try
 		{
-			Thread.sleep(2000);
+			Thread.sleep(300);
 		}
 		catch (InterruptedException e1)
 		{
@@ -112,6 +139,7 @@ public class UnitTest extends TestCase
 			{
 				deleteDirectory(files[i]);
 			}
+			file.delete();
 		}
 		else
 		{
