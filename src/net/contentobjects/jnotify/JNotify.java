@@ -56,7 +56,7 @@ public class JNotify implements IJNotify
 		{
 			try
 			{
-				_instance = (IJNotify) Class.forName("net.contentobjects.jnotify.win32.IJNotifyAdapterWin32").newInstance();
+				_instance = (IJNotify) Class.forName("net.contentobjects.jnotify.win32.JNotifyAdapterWin32").newInstance();
 			}
 			catch (Exception e)
 			{
