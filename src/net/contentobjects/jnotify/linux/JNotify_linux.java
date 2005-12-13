@@ -103,7 +103,7 @@ public class JNotify_linux
 		int wd = nativeAddWatch(path, mask);
 		if (wd < 0)
 		{
-			throw new JNotifyException_linux(getErrorDesc(-wd), -wd);
+			throw new JNotifyException_linux("Error watching " + path + " : " + getErrorDesc(-wd), -wd);
 		}
 		return wd;
 	}

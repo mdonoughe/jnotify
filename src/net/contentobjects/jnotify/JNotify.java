@@ -32,13 +32,13 @@
 package net.contentobjects.jnotify;
 
 
+
 public class JNotify implements IJNotify
 {
 	private static IJNotify _instance;
 	
 	static 
 	{
-		
 		String osName = System.getProperty("os.name").toLowerCase();
 		if (osName.equals("linux"))
 		{
