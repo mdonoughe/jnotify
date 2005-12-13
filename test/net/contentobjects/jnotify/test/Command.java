@@ -11,7 +11,7 @@ class Command
 {
 	static enum Action
 	{
-		DELETE, CREATE, RENAME, MODIFY
+		DELETE, CREATE_FILE, CREATE_DIR, RENAME, MODIFY
 	}
 	
 	private Command.Action _action;
@@ -28,9 +28,14 @@ class Command
 		return new Command(Action.MODIFY, path, null);
 	}
 	
-	public static Command create(String path)
+	public static Command createFile(String path)
 	{
-		return new Command(Action.CREATE, path, null);
+		return new Command(Action.CREATE_FILE, path, null);
+	}
+
+	public static Command createDir(String path)
+	{
+		return new Command(Action.CREATE_DIR, path, null);
 	}
 	
 	public static Command rename(String from, String to)
@@ -48,44 +53,36 @@ class Command
 	public boolean perform(File root) throws IOException
 	{
 		File file = new File(root, _path);
-		if (_action == Action.CREATE)
+		if (_action == Action.CREATE_FILE)
 		{
-			System.err.println("Creating " + file);
-			if (file.isDirectory())
-			{
-				return file.mkdir();
-			}
-			else
-			{
-				return file.createNewFile();
-			}
+			System.out.println("Creating " + file);
+			return file.createNewFile();
+		}
+		else
+		if (_action == Action.CREATE_DIR)
+		{
+			return file.mkdir();
 		}
 		else
 		if (_action == Action.DELETE)
 		{
-			System.err.println("Deleting " + file);
+			System.out.println("Deleting " + file);
 			return file.delete();
 		}
 		else
 		if (_action == Action.MODIFY)
 		{
-			System.err.println("Modifying " + file);
+			System.out.println("Modifying " + file);
+			// just opening seems to raise a modify event.
 			FileOutputStream out = new FileOutputStream(file);
-			try
-			{
-				out.write("A".getBytes());
-			}
-			finally
-			{
-				out.close();
-			}
+			out.close();
 			return true;
 			
 		}
 		else
 		if (_action == Action.RENAME)
 		{
-			System.err.println("Renaming " + file + " -> " + _path2);
+			System.out.println("Renaming " + file + " -> " + _path2);
 			return file.renameTo(new File(root, _path2));
 		}
 		// Unexpected action 
