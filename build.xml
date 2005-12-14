@@ -21,10 +21,6 @@
     	<mkdir dir="${output}/src"/>
     	
 		<antcall target="p.build">
-			<param name="dir" value="Debug" />
-		</antcall>        
-    	
-		<antcall target="p.build">
 			<param name="dir" value="Release" />
 		</antcall>    
     	
@@ -39,9 +35,9 @@
           target: p.build              
          ================================= -->
     <target name="p.build" depends="setup">
-    	<mkdir dir="${output}/bin/${dir}"/>
+    	<mkdir dir="${output}/bin/"/>
         <exec executable="make" dir="${dir}"></exec>
-    	<copy file="${dir}/jnotify.dll" todir="${output}/bin/${dir}"></copy>
+    	<copy file="${dir}/jnotify.dll" todir="${output}/bin/"></copy>
     </target>
 	
 	
