@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
-import net.contentobjects.jnotify.IJNotify;
 import net.contentobjects.jnotify.JNotify;
 import net.contentobjects.jnotify.JNotifyAdapter;
 import net.contentobjects.jnotify.JNotifyException;
@@ -47,7 +46,7 @@ public class UnitTest extends TestCase
 		commands.add(Command.rename("1", "2"));
 		events.add(Event.renamed("1", "2"));
 
-		performTest(IJNotify.FILE_ANY, false, commands, events);
+		performTest(JNotify.FILE_ANY, false, commands, events);
 	}
 
 	
@@ -71,7 +70,7 @@ public class UnitTest extends TestCase
 		commands.add(Command.createDir("a/c/d"));
 		events.add(Event.created("a/c/d"));
 
-		performTest(IJNotify.FILE_ANY, true, commands, events);
+		performTest(JNotify.FILE_ANY, true, commands, events);
 
 	}
 	
@@ -88,7 +87,7 @@ public class UnitTest extends TestCase
 		try
 		{
 			final ArrayList<Event> events = new ArrayList();
-			int wd2 = JNotify.get().addWatch(testRoot.getName(), mask, watchSubtree,
+			int wd2 = JNotify.addWatch(testRoot.getName(), mask, watchSubtree,
 				new JNotifyListener()
 				{
 
@@ -162,7 +161,7 @@ public class UnitTest extends TestCase
 				assertMatch(expected, actual);
 			}
 
-			boolean res = JNotify.get().removeWatch(wd2);
+			boolean res = JNotify.removeWatch(wd2);
 			assertTrue("Error removing watch",res);
 		}
 		finally
@@ -173,8 +172,8 @@ public class UnitTest extends TestCase
 
 	public void testRemoveWatch1() throws JNotifyException
 	{
-		int wd = JNotify.get().addWatch(".",IJNotify.FILE_ANY, false, new JNotifyAdapter());
-		boolean removeWatch = JNotify.get().removeWatch(wd);
+		int wd = JNotify.addWatch(".",JNotify.FILE_ANY, false, new JNotifyAdapter());
+		boolean removeWatch = JNotify.removeWatch(wd);
 		assertTrue(removeWatch);
 	}
 
@@ -199,7 +198,7 @@ public class UnitTest extends TestCase
 		events.add(Event.created("a/c/d"));
 		
 
-		performTest(IJNotify.FILE_ANY, true, commands, events);
+		performTest(JNotify.FILE_ANY, true, commands, events);
 	}
 
 	

@@ -2,7 +2,6 @@ package net.contentobjects.jnotify.test;
 
 import java.io.IOException;
 
-import net.contentobjects.jnotify.IJNotify;
 import net.contentobjects.jnotify.JNotify;
 import net.contentobjects.jnotify.JNotifyListener;
 
@@ -15,11 +14,12 @@ public class JNotifyTest
 	 */
 	public static void main(String[] args) throws IOException
 	{
+		// to add a watch : 
 		String path = "/home/omry/tmp";
-		int mask = IJNotify.FILE_CREATED | IJNotify.FILE_DELETED | IJNotify.FILE_MODIFIED
-				| IJNotify.FILE_RENAMED;
+		int mask = JNotify.FILE_CREATED | JNotify.FILE_DELETED | JNotify.FILE_MODIFIED
+				| JNotify.FILE_RENAMED;
 		boolean watchSubtree = true;
-		int watchID = JNotify.get().addWatch(path, mask, watchSubtree, new JNotifyListener()
+		int watchID = JNotify.addWatch(path, mask, watchSubtree, new JNotifyListener()
 		{
 			public void fileRenamed(int wd, String rootPath, String oldName, String newName)
 			{
@@ -55,7 +55,7 @@ public class JNotifyTest
 		}
 
 		// to remove watch:
-		boolean res = JNotify.get().removeWatch(watchID);
+		boolean res = JNotify.removeWatch(watchID);
 		if (!res)
 		{
 			// invalid watch ID specified.
