@@ -35,6 +35,7 @@ package net.contentobjects.jnotify.win32;
 import java.util.Hashtable;
 
 import net.contentobjects.jnotify.IJNotify;
+import net.contentobjects.jnotify.JNotify;
 import net.contentobjects.jnotify.JNotifyException;
 import net.contentobjects.jnotify.JNotifyListener;
 
@@ -70,7 +71,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 		return wd;
 	}
 
-	public boolean removeWatch(int wd)
+	public boolean removeWatch(int wd) throws JNotifyException
 	{
 		synchronized (_id2Data)
 		{
@@ -153,15 +154,15 @@ public class JNotifyAdapterWin32 implements IJNotify
 		switch (action)
 		{
 		case JNotify_win32.FILE_ACTION_ADDED:
-			return IJNotify.FILE_CREATED;
+			return JNotify.FILE_CREATED;
 		case JNotify_win32.FILE_ACTION_MODIFIED:
-			return IJNotify.FILE_MODIFIED;
+			return JNotify.FILE_MODIFIED;
 		case JNotify_win32.FILE_ACTION_REMOVED:
-			return IJNotify.FILE_DELETED;
+			return JNotify.FILE_DELETED;
 		case JNotify_win32.FILE_ACTION_RENAMED_NEW_NAME:
-			return IJNotify.FILE_RENAMED;
+			return JNotify.FILE_RENAMED;
 		case JNotify_win32.FILE_ACTION_RENAMED_OLD_NAME:
-			return IJNotify.FILE_RENAMED;
+			return JNotify.FILE_RENAMED;
 		default:
 			return -1; // silently fail, in case future windows versions will add more actions.
 		}
