@@ -50,7 +50,7 @@ import net.contentobjects.jnotify.JNotifyListener;
 
 public class JNotifyAdapterLinux implements IJNotify
 {
-	private final static boolean DEBUG = true;
+	private final static boolean DEBUG = false;
 	
 	private Hashtable<Integer,Integer> _linuxWd2Wd;
 	private Hashtable<Integer, WatchData> _id2Data;

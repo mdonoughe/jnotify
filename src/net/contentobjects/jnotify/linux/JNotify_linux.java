@@ -35,7 +35,7 @@ import net.contentobjects.jnotify.JNotifyException;
 
 public class JNotify_linux
 {
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	
 	static
 	{
