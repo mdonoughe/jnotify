@@ -45,7 +45,6 @@ import net.contentobjects.jnotify.JNotifyException;
 import net.contentobjects.jnotify.JNotifyListener;
 
 
-/** TODO : added by omry at Dec 6, 2005 : Unit test recursive listening.*/
 /** TODO : added by omry at Dec 11, 2005 : Handle move events*/
 
 public class JNotifyAdapterLinux implements IJNotify
@@ -143,7 +142,7 @@ public class JNotifyAdapterLinux implements IJNotify
 	
 	private WatchData createWatch(WatchData parentWatchData, boolean user,File path, int mask, int linuxMask, boolean watchSubtree, JNotifyListener listener) throws JNotifyException
 	{
-		String absPath = path.getAbsolutePath();
+		String absPath = path.getPath();
 		int wd = _watchIDCounter++;
 		int linuxWd = JNotify_linux.addWatch(absPath, linuxMask);
 		WatchData watchData = new WatchData(parentWatchData, user, absPath, wd, linuxWd, mask, linuxMask, watchSubtree, listener);
@@ -316,7 +315,7 @@ public class JNotifyAdapterLinux implements IJNotify
 					{
 						// fire an event only if the path is not in the path2Watch,
 						// meaning no watch has been created on it.
-						if (!_autoWatchesPaths.contains(newRootFile.getAbsolutePath()))
+						if (!_autoWatchesPaths.contains(newRootFile.getPath()))
 						{
 							watchData.notifyFileCreated(name);
 						}
@@ -324,7 +323,7 @@ public class JNotifyAdapterLinux implements IJNotify
 						{
 							if (DEBUG)
 							{
-								System.out.println("Assuming already sent event for " + newRootFile.getAbsolutePath());
+								System.out.println("Assuming already sent event for " + newRootFile.getPath());
 							}
 						}
 					}
