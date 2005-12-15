@@ -1,2 +1,3 @@
+15/12/2005 : Omry : No longer outputs absolute root path in events.
 15/12/2005 : Omry : API Cleanup : got rid of the get() method in JNotify. moved constants from IJnotify to JNotify
 15/12/2005 : Omry : Fixed bugs with the Linux impl.
