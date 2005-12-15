@@ -35,6 +35,8 @@ import net.contentobjects.jnotify.JNotifyException;
 
 public class JNotify_linux
 {
+	private static final boolean DEBUG = true;
+	
 	static
 	{
 		System.loadLibrary("jnotify");
@@ -105,12 +107,26 @@ public class JNotify_linux
 		{
 			throw new JNotifyException_linux("Error watching " + path + " : " + getErrorDesc(-wd), -wd);
 		}
+		
+		if (DEBUG)
+		{
+			System.out.println(wd + " = JNotify_linux.addWatch("+ path + "," + getMaskDesc(mask)+ ")");
+		}
+		
 		return wd;
 	}
 
-	public static int removeWatch(int wd)
+	public static void removeWatch(int wd) throws JNotifyException
 	{
-		return nativeRemoveWatch(wd);
+		int ret = nativeRemoveWatch(wd);
+		if (DEBUG)
+		{
+			System.out.println(ret + " = JNotify_linux.removeWatch("+ wd + ")");
+		}
+		if (ret != 0)
+		{
+			throw new JNotifyException_linux("Error removing watch " + wd, ret);
+		}
 	}
 	
 	private static void init()
@@ -131,6 +147,11 @@ public class JNotify_linux
 	@SuppressWarnings("unused")
 	private static void callbackProcessEvent(String name, int wd, int mask, int cookie)
 	{
+		if (DEBUG)
+		{
+			System.out.println("JNotify.event(name=" + name + ", wd="+ wd+", " + getMaskDesc(mask)+ (cookie != 0 ? ", cookie=" +cookie : "" )+ ")");
+		}
+		
 		if (_notifyListener != null)
 		{
 			_notifyListener.notify(name, wd, mask, cookie);
@@ -147,5 +168,43 @@ public class JNotify_linux
 		{
 			throw new RuntimeException("Notify listener is already set. multiple notify listeners are not supported.");
 		}
-	}	
+	}
+	
+	private static String getMaskDesc(int linuxMask)
+	{
+		boolean lIN_ACCESS = (linuxMask & JNotify_linux.IN_ACCESS) != 0;
+		boolean lIN_MODIFY = (linuxMask & JNotify_linux.IN_MODIFY) != 0;
+		boolean lIN_ATTRIB = (linuxMask & JNotify_linux.IN_ATTRIB) != 0;
+		boolean lIN_CLOSE_WRITE = (linuxMask & JNotify_linux.IN_CLOSE_WRITE) != 0;
+		boolean lIN_CLOSE_NOWRITE = (linuxMask & JNotify_linux.IN_CLOSE_NOWRITE) != 0;
+		boolean lIN_OPEN = (linuxMask & JNotify_linux.IN_OPEN) != 0;
+		boolean lIN_MOVED_FROM = (linuxMask & JNotify_linux.IN_MOVED_FROM) != 0;
+		boolean lIN_MOVED_TO = (linuxMask & JNotify_linux.IN_MOVED_TO) != 0;
+		boolean lIN_CREATE = (linuxMask & JNotify_linux.IN_CREATE) != 0;
+		boolean lIN_DELETE = (linuxMask & JNotify_linux.IN_DELETE) != 0;
+		boolean lIN_DELETE_SELF = (linuxMask & JNotify_linux.IN_DELETE_SELF) != 0;
+		boolean lIN_MOVE_SELF = (linuxMask & JNotify_linux.IN_MOVE_SELF) != 0;
+		boolean lIN_UNMOUNT = (linuxMask & JNotify_linux.IN_UNMOUNT) != 0;
+		boolean lIN_Q_OVERFLOW = (linuxMask & JNotify_linux.IN_Q_OVERFLOW) != 0;
+		boolean lIN_IGNORED = (linuxMask & JNotify_linux.IN_IGNORED) != 0;
+		String s ="";
+		if (lIN_ACCESS) s += "IN_ACCESS|";
+		if (lIN_MODIFY) s += "IN_MODIFY|";
+		if (lIN_ATTRIB) s += "IN_ATTRIB|";
+		if (lIN_CLOSE_WRITE) s += "IN_CLOSE_WRITE|";
+		if (lIN_CLOSE_NOWRITE) s += "IN_CLOSE_NOWRITE|";
+		if (lIN_OPEN) s += "IN_OPEN|";
+		if (lIN_MOVED_FROM) s += "IN_MOVED_FROM|";
+		if (lIN_MOVED_TO) s += "IN_MOVED_TO|";
+		if (lIN_CREATE) s += "IN_CREATE|";
+		if (lIN_DELETE) s += "IN_DELETE|";
+		if (lIN_DELETE_SELF) s += "IN_DELETE_SELF|";
+		if (lIN_MOVE_SELF) s += "IN_MOVE_SELF|";
+		if (lIN_UNMOUNT) s += "IN_UNMOUNT|";
+		if (lIN_Q_OVERFLOW) s += "IN_Q_OVERFLOW|";
+		if (lIN_IGNORED) s += "IN_IGNORED|";
+		return s;
+	}
+
+	
 }

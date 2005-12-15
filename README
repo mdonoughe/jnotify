@@ -3,15 +3,14 @@ and on Windows XP/2K/NT (Tested on XP).
 
 Usage of JNotify is very simple:
 
-To add a watch:
-
+// to add a watch : 
 String path = "/home/omry/tmp";
-int mask = 	IJNotify.FILE_CREATED | 
-			IJNotify.FILE_DELETED | 
-			IJNotify.FILE_MODIFIED | 
-			IJNotify.FILE_RENAMED;
+int mask =  JNotify.FILE_CREATED | 
+			JNotify.FILE_DELETED | 
+			JNotify.FILE_MODIFIED| 
+			JNotify.FILE_RENAMED;
 boolean watchSubtree = true;
-int watchID = JNotify.get().addWatch(path, mask, watchSubtree, new JNotifyListener()
+int watchID = JNotify.addWatch(path, mask, watchSubtree, new JNotifyListener()
 {
 	public void fileRenamed(int wd, String rootPath, String oldName, String newName)
 	{
@@ -39,8 +38,10 @@ int watchID = JNotify.get().addWatch(path, mask, watchSubtree, new JNotifyListen
 });
 
 
+
+
 // to remove watch:
-boolean res = JNotify.get().removeWatch(watchID);
+boolean res = JNotify.removeWatch(watchID);
 if (!res)
 {
 	// invalid watch ID specified.

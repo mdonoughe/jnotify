@@ -33,8 +33,14 @@ package net.contentobjects.jnotify;
 
 
 
-public class JNotify implements IJNotify
+public class JNotify
 {
+	public static final int FILE_CREATED 	= 0x1;
+	public static final int FILE_DELETED 	= 0x2;
+	public static final int FILE_MODIFIED 	= 0x4;
+	public static final int FILE_RENAMED 	= 0x8;
+	public static final int FILE_ANY 		= FILE_CREATED | FILE_DELETED | FILE_MODIFIED | FILE_RENAMED;
+	
 	private static IJNotify _instance;
 	
 	static 
@@ -69,17 +75,13 @@ public class JNotify implements IJNotify
 		}
 	}
 	
-	public static IJNotify get()
-	{
-		return _instance;
-	}
 	
-	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener) throws JNotifyException
+	public static int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener) throws JNotifyException
 	{
 		return _instance.addWatch(path, mask, watchSubtree, listener);
 	}
 
-	public boolean removeWatch(int watchId)
+	public static boolean removeWatch(int watchId) throws JNotifyException
 	{
 		return _instance.removeWatch(watchId);
 	}
