@@ -39,11 +39,9 @@ int watchID = JNotify.get().addWatch(path, mask, watchSubtree, new JNotifyListen
 });
 
 
-
-to remove watch:
-
+// to remove watch:
 boolean res = JNotify.get().removeWatch(watchID);
 if (!res)
 {
-	// failed to remove
+	// invalid watch ID specified.
 }
