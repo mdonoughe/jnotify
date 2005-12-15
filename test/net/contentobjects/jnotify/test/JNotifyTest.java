@@ -55,7 +55,11 @@ public class JNotifyTest
 		}
 
 		// to remove watch:
-		JNotify.get().removeWatch(watchID);
+		boolean res = JNotify.get().removeWatch(watchID);
+		if (!res)
+		{
+			// invalid watch ID specified.
+		}
 	}
 
 }
