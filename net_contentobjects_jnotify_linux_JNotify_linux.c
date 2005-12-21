@@ -118,7 +118,6 @@ int fd = -1;
  */
 int init()
 {
-	printf("init()\n");
 	if (fd != -1)
 	{
 		return 0;
