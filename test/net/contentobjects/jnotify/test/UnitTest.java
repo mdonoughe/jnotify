@@ -20,8 +20,8 @@ public class UnitTest extends TestCase
 
 	public void testFlat() throws Exception
 	{
-		ArrayList<Command> commands = new ArrayList();
-		ArrayList<Event> events = new ArrayList();
+		ArrayList<Command> commands = new ArrayList<Command>();
+		ArrayList<Event> events = new ArrayList<Event>();
 
 		// create a dir
 		commands.add(Command.createDir("test"));
@@ -53,8 +53,8 @@ public class UnitTest extends TestCase
 	
 	public void testRecursive() throws Exception
 	{
-		ArrayList<Command> commands = new ArrayList();
-		ArrayList<Event> events = new ArrayList();
+		ArrayList<Command> commands = new ArrayList<Command>();
+		ArrayList<Event> events = new ArrayList<Event>();
 
 		commands.add(Command.createDir("a"));
 		events.add(Event.created("a"));
@@ -86,7 +86,7 @@ public class UnitTest extends TestCase
 		testRoot.mkdirs();
 		try
 		{
-			final ArrayList<Event> events = new ArrayList();
+			final ArrayList<Event> events = new ArrayList<Event>();
 			int wd2 = JNotify.addWatch(testRoot.getName(), mask, watchSubtree,
 				new JNotifyListener()
 				{
@@ -180,8 +180,8 @@ public class UnitTest extends TestCase
 	
 	public void testRemoveWatch2() throws IOException
 	{
-		ArrayList<Command> commands = new ArrayList();
-		ArrayList<Event> events = new ArrayList();
+		ArrayList<Command> commands = new ArrayList<Command>();
+		ArrayList<Event> events = new ArrayList<Event>();
 
 		commands.add(Command.createDir("a"));
 		events.add(Event.created("a"));
