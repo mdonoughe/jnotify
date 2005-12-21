@@ -10,7 +10,6 @@ public class JNotifyException_win32 extends JNotifyException
 		super(s, systemErrorCode);
 	}
 
-	@Override
 	public int getErrorCode()
 	{
 		return ERROR_UNSPECIFIED;

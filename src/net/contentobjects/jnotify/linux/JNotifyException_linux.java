@@ -12,7 +12,6 @@ public class JNotifyException_linux extends JNotifyException
 		super(s, systemErrorCode);
 	}
 
-	@Override
 	public int getErrorCode()
 	{
 		switch (_systemErrorCode)

@@ -88,7 +88,6 @@ public class JNotify_win32
 		nativeRemoveWatch(wd);
 	}
 	
-	@SuppressWarnings("unused")
 	public static void callbackProcessEvent(int wd, int action, String rootPath, String filePath)
 	{
 		if (_notifyListener != null)

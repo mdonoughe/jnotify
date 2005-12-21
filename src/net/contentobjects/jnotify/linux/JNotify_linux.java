@@ -133,7 +133,6 @@ public class JNotify_linux
 	{
 		Thread thread = new Thread("INotify thread")
 		{
-			@Override
 			public void run()
 			{
 				nativeNotifyLoop();
@@ -144,8 +143,7 @@ public class JNotify_linux
 	}
 	
 	
-	@SuppressWarnings("unused")
-	private static void callbackProcessEvent(String name, int wd, int mask, int cookie)
+	static void callbackProcessEvent(String name, int wd, int mask, int cookie)
 	{
 		if (DEBUG)
 		{

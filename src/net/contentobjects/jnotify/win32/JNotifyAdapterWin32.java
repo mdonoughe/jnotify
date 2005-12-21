@@ -41,7 +41,7 @@ import net.contentobjects.jnotify.JNotifyListener;
 
 public class JNotifyAdapterWin32 implements IJNotify
 {
-	private Hashtable<Integer, WatchData> _id2Data;
+	private Hashtable _id2Data;
 
 	public JNotifyAdapterWin32()
 	{
@@ -52,7 +52,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 				notifyChangeEvent(wd, action, rootPath, filePath);
 			}
 		});
-		_id2Data = new Hashtable<Integer, WatchData>();
+		_id2Data = new Hashtable();
 	}
 
 	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener)
@@ -67,7 +67,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 				| JNotify_win32.FILE_NOTIFY_CHANGE_ATTRIBUTES
 				| JNotify_win32.FILE_NOTIFY_CHANGE_DIR_NAME
 				| JNotify_win32.FILE_NOTIFY_CHANGE_FILE_NAME, watchSubtree);
-		_id2Data.put(wd, new WatchData(wd, mask, listener));
+		_id2Data.put(new Integer(wd), new WatchData(wd, mask, listener));
 		return wd;
 	}
 
@@ -75,9 +75,9 @@ public class JNotifyAdapterWin32 implements IJNotify
 	{
 		synchronized (_id2Data)
 		{
-			if (_id2Data.containsKey(wd))
+			if (_id2Data.containsKey(new Integer(wd)))
 			{
-				_id2Data.remove(wd);
+				_id2Data.remove(new Integer(wd));
 				JNotify_win32.removeWatch(wd);
 				return true;
 			}
@@ -107,7 +107,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 	{
 		synchronized (_id2Data)
 		{
-			WatchData watchData = _id2Data.get(wd);
+			WatchData watchData = (WatchData) _id2Data.get(new Integer(wd));
 			if (watchData != null)
 			{
 				int mask = watchData._mask;
@@ -125,7 +125,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 				if (action == JNotify_win32.FILE_ACTION_REMOVED &&  (mask & mapped) != 0)
 				{
 					watchData._notifyListener.fileDeleted(wd, rootPath, filePath);
-					_id2Data.remove(wd);
+					_id2Data.remove(new Integer(wd));
 				}
 				else
 				if (action == JNotify_win32.FILE_ACTION_RENAMED_OLD_NAME &&  (mask & mapped) != 0)
@@ -137,7 +137,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 				{
 					watchData._notifyListener.fileRenamed(wd, rootPath, watchData.renameOldName, filePath);
 					watchData.renameOldName = null;
-					_id2Data.remove(wd);
+					_id2Data.remove(new Integer(wd));
 				}
 				
 			}
