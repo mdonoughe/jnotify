@@ -1,0 +1,5 @@
+
+------------------------------------
+Changes in jnotify win32 native code
+------------------------------------
+04/01/2006 : Omry : Unified build for windows and linux from the same ant build (on linux)

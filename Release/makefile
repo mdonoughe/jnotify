@@ -27,8 +27,8 @@ all: jnotify.dll
 jnotify.dll: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	@echo g++ -D_JNI_IMPLEMENTATION_ -Wl,--kill-at -shared -ojnotify.dll $(OBJS) $(USER_OBJS) $(LIBS)
-	@g++ -D_JNI_IMPLEMENTATION_ -Wl,--kill-at -shared -ojnotify.dll $(OBJS) $(USER_OBJS) $(LIBS)
+	@echo i586-mingw32msvc-g++ -D_JNI_IMPLEMENTATION_ -Wl,--kill-at -shared -ojnotify.dll $(OBJS) $(USER_OBJS) $(LIBS)
+	@i586-mingw32msvc-g++ -D_JNI_IMPLEMENTATION_ -Wl,--kill-at -shared -ojnotify.dll $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
