@@ -37,7 +37,7 @@
 #include <winnt.h>
 #include <string>
 #include "Win32FSHook.h"
-#include "logger.h"
+#include "Logger.h"
 #include "Lock.h"
 
 Win32FSHook *_win32FSHook;
