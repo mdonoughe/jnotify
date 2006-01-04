@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     Jan 4, 2006 2:12:16 PM                                                        
+
+     JNotify    
+     Builds jnotify library
+                   
+     omry                                                                
+     ====================================================================== -->
+<project name="JNotify" default="all">
+    <description>
+            Builds jnotify library
+    </description>
+
+    <!-- ================================= 
+          target: all              
+         ================================= -->
+    <target name="all" depends="clean,build" description="--> Builds jnotify library">
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: clean                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="clean" depends="setup">
+		<delete failonerror="false" dir="${BUILD_DIR}" />
+		<ant antfile="native_build.xml" target="clean">
+			<property name="platform" value="linux"/>
+		</ant>
+		
+		<ant antfile="native_build.xml" target="clean">
+			<property name="platform" value="win32"/>
+		</ant>
+		
+    	
+    </target>
+	
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: build                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="build" depends="setup">
+    	<mkdir dir="${BUILD_DIR}/bin"/>
+    	<mkdir dir="${BUILD_DIR}/output"/>
+    	<mkdir dir="${BUILD_DIR}/dist"/>
+
+    	<javac source="1.3" target="1.3" srcdir="src" destdir="${BUILD_DIR}/bin" debug="${DEBUG}" debuglevel="${DEBUG_LEVEL}" />
+    	
+		<jar destfile="${BUILD_DIR}/output/jnotify-${VERSION}.jar" basedir="${BUILD_DIR}/bin" update="true" duplicate="fail">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+			</manifest>
+		</jar>
+    	
+		<zip destfile="${BUILD_DIR}/output/notify-${VERSION}-src.zip" update="true"
+			basedir="src"
+		/>
+    	
+    	
+		<concat destfile="${BUILD_DIR}/output/CHANGELOG" append="true" fixlastline="true">
+			<filelist dir="." files="CHANGELOG"/>
+		</concat>
+    	<ant antfile="native_build.xml" target="build">
+    		<property name="platform" value="linux"/>
+    		<property name="output" value="${BUILD_DIR}/output"/>
+    		<property name="version" value="${VERSION}"/>
+    	</ant>
+    	<ant antfile="native_build.xml" target="build">
+    		<property name="platform" value="win32"/>
+    		<property name="output" value="${BUILD_DIR}/output"/>
+    		<property name="version" value="${VERSION}"/>
+    	</ant>
+        	
+    	<copy todir="${BUILD_DIR}/output/" verbose="true"  failonerror="true">
+    		<fileset dir="." excludes="${bin.excludes}" includes="${bin.includes}" />
+    	</copy>
+    	
+    	<zip destfile="${BUILD_DIR}/dist/jnotify-lib-${VERSION}.zip">
+    		<fileset dir="${BUILD_DIR}/output"/>
+    	</zip>    	
+    </target>
+	
+	
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: setup                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="setup">
+    	<property name="BUILD_DIR" value="build"/>
+    	<loadproperties srcfile="build.properties" />
+    </target>
+
+
+	
+
+</project>
+

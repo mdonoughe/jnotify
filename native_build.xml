@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     Dec 14, 2005 11:48:16 AM                                                        
+
+     native code builder for JNotify
+                   
+     omry                                                                
+     ====================================================================== -->
+<project name="jnotify native build" default="build">
+	<description>
+	    	native code builder for JNotify
+    </description>
+	
+	
+    <!-- ================================= 
+          target: build              
+         ================================= -->
+    <target name="build" depends="setup" description="--> builds jnotify native code for jnotify-${platform}">
+    	
+    	<fail unless="platform"/>
+    	
+		<antcall target="p.build">
+			<param name="dir" value="../jnotify_${platform}/Release" />
+		</antcall>    
+    	
+    	<zip destfile="${output}/jnotify-native-${platform}-${version}-src.zip">
+    		<fileset dir="../jnotify_${platform}" excludes="${src.excludes}" includes="${src.includes}" />
+    	</zip>
+    	
+    	 <concat destfile="${output}/CHANGELOG" append="true" fixlastline="true">
+    	    <filelist dir="../jnotify_${platform}" files="CHANGELOG"/>
+    	  </concat>
+    </target>
+
+
+	
+    <!-- ================================= 
+          target: p.build              
+         ================================= -->
+    <target name="p.build" depends="setup">
+    	<echo>"dir = ${dir}"</echo>
+    	<mkdir dir="${output}"/>
+        <exec executable="make" dir="${dir}"></exec>
+    	
+		<copy todir="${output}" verbose="true"  failonerror="true">
+			<fileset dir="${dir}" includes="${output.include}" />
+		</copy>
+    </target>
+	
+	
+    <!-- ================================= 
+          target: clean              
+         ================================= -->
+    <target name="clean"  depends="setup" description="--> clean">
+		<antcall target="p.clean">
+			<param name="dir" value="../jnotify_${platform}/Debug" />
+		</antcall>        
+    	
+		<antcall target="p.clean">
+			<param name="dir" value="../jnotify_${platform}/Release" />
+		</antcall>    
+    	
+    	<delete dir="${output}"/>
+    </target>
+
+
+	
+    <target name="p.clean" depends="setup">
+    	<fail unless="platform"/>
+        <exec executable="make" dir="${dir}"> 
+        	<arg line="clean"/>
+        </exec>
+    	<delete dir="${output}/${dir}" />
+    </target>
+	
+	
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: setup                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="setup">
+    	<loadproperties srcfile="../jnotify_${platform}/build.properties" />
+    </target>
+
+
+
+</project>
+
