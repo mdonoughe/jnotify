@@ -143,12 +143,31 @@ public class JNotifyAdapterWin32 implements IJNotify
 			}
 			else
 			{
-				System.err
-					.println("IJNotifyAdapterWin32: warning, recieved event for an unregisted watch. ignoring...");
+				System.out
+					.println("JNotifyAdapterWin32: IGNORED Unregistered : " + wd + " . " +getDebugWinAction(action) + " root=" + rootPath + " , path=" + filePath);
 			}
 		}
 	}
 
+	private String getDebugWinAction(int action)
+	{
+		switch (action)
+		{
+		case JNotify_win32.FILE_ACTION_ADDED:
+			return "FILE_ACTION_ADDED";
+		case JNotify_win32.FILE_ACTION_MODIFIED:
+			return "FILE_ACTION_MODIFIED";
+		case JNotify_win32.FILE_ACTION_REMOVED:
+			return "FILE_ACTION_REMOVED";
+		case JNotify_win32.FILE_ACTION_RENAMED_NEW_NAME:
+			return "FILE_ACTION_RENAMED_NEW_NAME";
+		case JNotify_win32.FILE_ACTION_RENAMED_OLD_NAME:
+			return "FILE_ACTION_RENAMED_OLD_NAME";
+		default:
+			return "UNKNOWN " + action; 
+		}
+	}	
+	
 	private int mapAction(int action)
 	{
 		switch (action)
