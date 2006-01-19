@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 3.0.0?>
+
+<ManagedProjectBuildInfo>
+<project id="jfshook_lib_win32.cdt.managedbuild.target.gnu.cygwin.so.691138722" name="Shared Library (Gnu on Windows)" projectType="cdt.managedbuild.target.gnu.cygwin.so">
+<configuration artifactExtension="dll" artifactName="jnotify" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.so.debug.530968632" name="Debug" parent="cdt.managedbuild.config.gnu.cygwin.so.debug">
+<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.so.debug.1059879004" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.debug">
+<tool command="gcc" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug.213765573" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug"/>
+<tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug.1836740865" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug">
+<option id="gnu.cpp.compiler.option.include.paths.258274852" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="C:/dev/java/jdk/1.5.0_04/include"/>
+<listOptionValue builtIn="false" value="C:/dev/java/jdk/1.5.0_04/include/win32"/>
+</option>
+<option id="gnu.cpp.compiler.option.other.other.1373065977" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0" valueType="string"/>
+<option id="gnu.cpp.compiler.cygwin.so.debug.option.debugging.level.997683567" superClass="gnu.cpp.compiler.cygwin.so.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+</tool>
+<tool command="gcc" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug.1041489023" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug"/>
+<tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug.89913599" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug">
+<option id="gnu.cpp.link.cygwin.so.debug.option.shared.1241839529" superClass="gnu.cpp.link.cygwin.so.debug.option.shared" value="true" valueType="boolean"/>
+<option id="gnu.cpp.link.option.flags.225276185" superClass="gnu.cpp.link.option.flags" value="-D_JNI_IMPLEMENTATION_ -Wl,--kill-at" valueType="string"/>
+</tool>
+<tool command="as" id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug.877275495" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug"/>
+<macros/>
+</toolChain>
+</configuration>
+<configuration artifactExtension="dll" artifactName="jnotify" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.config.gnu.cygwin.so.debug.1297088445" name="Release" parent="cdt.managedbuild.config.gnu.cygwin.so.debug">
+<toolChain id="cdt.managedbuild.toolchain.gnu.cygwin.so.debug.132168575" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.cygwin.so.debug">
+<tool command="gcc" id="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug.500218204" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.cygwin.so.debug"/>
+<tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug.146646294" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.cygwin.so.debug">
+<option id="gnu.cpp.compiler.option.include.paths.579287170" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;X:\bin\jdk\1.5.0_04\include&quot;"/>
+<listOptionValue builtIn="false" value="&quot;X:\bin\jdk\1.5.0_04\include\win32&quot;"/>
+</option>
+<option id="gnu.cpp.compiler.option.other.other.1847739155" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0" valueType="string"/>
+<option id="gnu.cpp.compiler.cygwin.so.debug.option.debugging.level.2117014125" name="Debug Level" superClass="gnu.cpp.compiler.cygwin.so.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+</tool>
+<tool command="gcc" id="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug.4178884" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.so.debug"/>
+<tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug.525403478" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.so.debug">
+<option id="gnu.cpp.link.cygwin.so.debug.option.shared.2038255717" name="Shared (-shared)" superClass="gnu.cpp.link.cygwin.so.debug.option.shared" value="true" valueType="boolean"/>
+<option id="gnu.cpp.link.option.flags.1533573748" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-D_JNI_IMPLEMENTATION_ -Wl,--kill-at" valueType="string"/>
+</tool>
+<tool command="as" id="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug.1543104440" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.so.debug"/>
+<macros/>
+</toolChain>
+</configuration>
+<macros/>
+</project>
+</ManagedProjectBuildInfo>
