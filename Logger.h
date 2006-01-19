@@ -34,5 +34,6 @@
 #define LOGGER_H_
 
 void log(char *format, ...);
+void debug(char *format, ...);
 
 #endif /*LOGGER_H_*/

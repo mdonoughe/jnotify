@@ -39,6 +39,7 @@
 #include <winnt.h>
 #include <string>
 
+
 using namespace std;
 
 typedef void(*ChangeCallback)(int watchID, int action, const WCHAR* rootPath, const WCHAR* filePath);

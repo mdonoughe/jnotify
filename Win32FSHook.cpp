@@ -97,7 +97,6 @@ int Win32FSHook::add_watch(const WCHAR* path, long notifyFilter, bool watchSubdi
 	Lock lock(&_cSection,true);
 	WatchData *watchData;
 	
-	
 	try
 	{
 		watchData = new WatchData(path, notifyFilter, watchSubdirs, Win32FSHook::changeCallback, changeCallback);
@@ -118,8 +117,24 @@ int Win32FSHook::add_watch(const WCHAR* path, long notifyFilter, bool watchSubdi
 
 void CALLBACK Win32FSHook::changeCallback(DWORD dwErrorCode, DWORD dwNumberOfBytesTransfered,  LPOVERLAPPED lpOverlapped)
 {
-	WatchData* wd = (WatchData*)lpOverlapped->hEvent;
-	char* events=(char*)wd->getNotifyInfo();
+	int wd = (int)lpOverlapped->hEvent;
+	map <int, WatchData*>::const_iterator it = _win32FSHook->_wid2WatchData.find(wd);
+	if (it == _win32FSHook->_wid2WatchData.end())
+	{
+		debug("changeCallback: watch id %d not found", wd);
+		return;
+	}
+	WatchData *watchData = it->second;
+	debug("Win32FSHook::changeCallback calling handlePendingActions");
+	_win32FSHook->handlePendingActions();
+	map <int, WatchData*>::const_iterator ii = _win32FSHook->_wid2WatchData.find(watchData->getId());
+	if (ii == _win32FSHook->_wid2WatchData.end())
+	{
+		//log("changeCallback : ignoring event for watch id %d, no longer in wid2WatchData map", wd->getId());
+		return;
+	}
+	
+	char* events=(char*)watchData->getNotifyInfo();
 	FILE_NOTIFY_INFORMATION *event;
 	int i=0;
 	do
@@ -136,17 +151,17 @@ void CALLBACK Win32FSHook::changeCallback(DWORD dwErrorCode, DWORD dwNumberOfByt
 		name[len] = 0;
 		
 		// log("%ls : Event %d on %ls (len =%d)",wd->getPath(), action, name, len);
-		wd->getCallback()(wd->getId(), action, wd->getPath(), name);
+		watchData->getCallback()(watchData->getId(), action, watchData->getPath(), name);
 		
 		delete[] name;
 		i = event->NextEntryOffset;
 	}
 	while (event->NextEntryOffset);	
 	
-	int res = wd->watchDirectory();
+	int res = watchData->watchDirectory();
 	if (res != 0)
 	{
-		log("Error watching dir %s : %d",wd->getPath(), res);
+		log("Error watching dir %s : %d",watchData->getPath(), res);
 	}
 }
 
@@ -155,47 +170,8 @@ DWORD WINAPI Win32FSHook::mainLoop( LPVOID lpParam )
 	Win32FSHook* _this = (Win32FSHook*)lpParam;
 	while (_this->_isRunning)
 	{
-		{ // lock scope
-			Lock lock(&_this->_cSection,true);
-			while (_this->_isRunning && _this->_pendingActions.size() > 0)
-			{
-				pair<ACTION, int> action = _this->_pendingActions.front();
-				_this->_pendingActions.pop();
-				switch (action.first)
-				{
-					case WATCH:
-					{
-						int wd = action.second;
-						map <int, WatchData*>::const_iterator i = _this->_wid2WatchData.find(wd);
-						if (i == _this->_wid2WatchData.end())
-						{
-							log("WATCH: watch id %d not found", wd);
-						}
-						else
-						{
-							_this->watchDirectory(i->second);
-						}
-					}
-					break;
-					case CANCEL:
-					{
-						int wd = action.second;
-						map <int, WatchData*>::const_iterator i = _this->_wid2WatchData.find(wd);
-						if (i == _this->_wid2WatchData.end())
-						{
-							log("CANCEL: watch id %d not found", wd);
-						}
-						else
-						{
-							int watchId = i->first;
-							_this->unwatchDirectory(watchId);
-						}
-					}
-					break;
-				}	
-			}
-		}
-		
+		debug("Win32FSHook::mainLoop calling handlePendingActions");
+		_this->handlePendingActions();
 		if (_this->_isRunning)
 		{
 			WaitForSingleObjectEx(_this->_mainLoopEvent, INFINITE, TRUE);
@@ -208,6 +184,7 @@ DWORD WINAPI Win32FSHook::mainLoop( LPVOID lpParam )
 
 void Win32FSHook::unwatchDirectory(int wd)
 {
+	debug("Win32FSHook::unwatchDirectory(%d)",wd);
 	map <int, WatchData*>::const_iterator i = _wid2WatchData.find(wd);
 	if (i == _wid2WatchData.end())
 	{
@@ -216,16 +193,17 @@ void Win32FSHook::unwatchDirectory(int wd)
 	else
 	{
 		WatchData *watchData = i->second;
-		log("Stop watching %ls", watchData->getPath());
+		debug("Stop watching %ls", watchData->getPath());
 		int res = watchData->unwatchDirectory();
 		if (res != 0)
 		{
-			log("Error canceling watch on dir %ls : %d",watchData->getPath(), res);
+			//log("Error canceling watch on dir %ls : %d",watchData->getPath(), res);
 		}
 		else
 		{
-			if (_wid2WatchData.erase(wd) != 1)
+			if (_wid2WatchData.erase(wd) == 1)
 			{
+				debug("deleting wd=%d",watchData->getId());
 				delete watchData;
 			}
 			else
@@ -239,11 +217,55 @@ void Win32FSHook::unwatchDirectory(int wd)
 
 void Win32FSHook::watchDirectory(WatchData* wd)
 {
-	log("Watching %ls", wd->getPath());
+	debug("Watching %ls", wd->getPath());
 	int res = wd->watchDirectory();
 	if (res != 0)
 	{
 		log("Error watching dir %ls : %d",wd->getPath(), res);
 	}
-	
 }
+
+void Win32FSHook::handlePendingActions()
+{ 
+	debug("Win32FSHook::handlePendingActions = %d", this);
+	Lock lock(&_cSection,true);
+	while (_isRunning && _pendingActions.size() > 0)
+	{
+		pair<ACTION, int> action = _pendingActions.front();
+		_pendingActions.pop();
+		switch (action.first)
+		{
+			case WATCH:
+			{
+				int wd = action.second;
+				map <int, WatchData*>::const_iterator i = _wid2WatchData.find(wd);
+				if (i == _wid2WatchData.end())
+				{
+					debug("WATCH: watch id %d not found", wd);
+				}
+				else
+				{
+					watchDirectory(i->second);
+				}
+			}
+			break;
+			case CANCEL:
+			{
+				int wd = action.second;
+				map <int, WatchData*>::const_iterator i = _wid2WatchData.find(wd);
+				if (i == _wid2WatchData.end())
+				{
+					debug("CANCEL: watch id %d not found", wd);
+				}
+				else
+				{
+					int watchId = i->first;
+					debug("Win32FSHook::handlePendingActions - calling unwatch");
+					unwatchDirectory(watchId);
+				}
+			}
+			break;
+		}	
+	}
+}
+

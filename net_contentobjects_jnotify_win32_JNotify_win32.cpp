@@ -132,6 +132,7 @@ JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_win32_JNotify_1win32_nati
 JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_win32_JNotify_1win32_nativeAddWatch
   (JNIEnv *env, jclass clazz, jstring path, jlong notifyFilter, jboolean watchSubdir)
 {
+	
 	const WCHAR *cstr = (const WCHAR*)env->GetStringChars(path, NULL);
     if (cstr == NULL) 
     {
@@ -155,7 +156,7 @@ JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_win32_JNotify_1win32_nati
  * Method:    nativeRemoveWatch
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_net_contentobjects_fshook_win32_Win32FSHook_nativeRemoveWatch
+JNIEXPORT void JNICALL Java_net_contentobjects_jnotify_win32_JNotify_1win32_nativeRemoveWatch
   (JNIEnv *env, jclass clazz, jint watchId)
 {
 	_win32FSHook->remove_watch(watchId);

@@ -39,6 +39,24 @@
 #include "Lock.h"
 
 Lock _logLoc;
+bool dbg = false;
+void debug(char *format, ...)
+{
+	if (dbg)
+	{
+		_logLoc.lock();
+		static char sbuf[1024];
+	
+		va_list args;
+		va_start(args, format);
+		_vsnprintf(sbuf, 1024, format, args);
+		va_end(args);
+		printf("Win32 : %s\n",sbuf);
+		fflush(stdout);
+		
+		_logLoc.unlock();
+	}
+}
 
 void log(char *format, ...)
 {
@@ -49,7 +67,7 @@ void log(char *format, ...)
 	va_start(args, format);
 	_vsnprintf(sbuf, 1024, format, args);
 	va_end(args);
-	printf("%s\n",sbuf);
+	printf("Win32 : %s\n",sbuf);
 	fflush(stdout);
 	
 	_logLoc.unlock();

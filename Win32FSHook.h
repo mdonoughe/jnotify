@@ -45,6 +45,8 @@
 
 using namespace std;
 
+extern class Win32FSHook *_win32FSHook;
+
 class Win32FSHook
 {
 private:
@@ -76,6 +78,8 @@ private:
 	void watchDirectory(WatchData* wd);
 	
 	void unwatchDirectory(int wd);
+	
+	void handlePendingActions();
 public:
 	static const int ERR_INIT_THREAD = 1;
 	

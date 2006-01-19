@@ -60,7 +60,7 @@ WatchData::WatchData(const WCHAR* path, int mask, bool watchSubtree, LPOVERLAPPE
 	_overLapped.InternalHigh = 0;
 	_overLapped.Offset = 0;
 	_overLapped.OffsetHigh = 0;
-	_overLapped.hEvent = (HANDLE)this;
+	_overLapped.hEvent = (HANDLE)_watchId;
 	_hDir = CreateFileW(_path,
 						 FILE_LIST_DIRECTORY | GENERIC_READ | GENERIC_WRITE,
 						 FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
