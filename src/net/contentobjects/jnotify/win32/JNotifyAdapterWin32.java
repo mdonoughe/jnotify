@@ -125,7 +125,6 @@ public class JNotifyAdapterWin32 implements IJNotify
 				if (action == JNotify_win32.FILE_ACTION_REMOVED &&  (mask & mapped) != 0)
 				{
 					watchData._notifyListener.fileDeleted(wd, rootPath, filePath);
-					_id2Data.remove(new Integer(wd));
 				}
 				else
 				if (action == JNotify_win32.FILE_ACTION_RENAMED_OLD_NAME &&  (mask & mapped) != 0)
