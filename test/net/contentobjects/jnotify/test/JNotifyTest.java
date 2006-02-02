@@ -15,7 +15,7 @@ public class JNotifyTest
 	public static void main(String[] args) throws IOException
 	{
 		// to add a watch : 
-		String path = "/home/omry/tmp";
+		String path = "c:/";
 		int mask = JNotify.FILE_CREATED | JNotify.FILE_DELETED | JNotify.FILE_MODIFIED
 				| JNotify.FILE_RENAMED;
 		boolean watchSubtree = true;
@@ -48,7 +48,7 @@ public class JNotifyTest
 
 		try
 		{
-			Thread.sleep(1000000);
+			Thread.sleep(2000);
 		}
 		catch (InterruptedException e1)
 		{

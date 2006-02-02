@@ -3,15 +3,13 @@
  */
 package net.contentobjects.jnotify.test;
 
-
-
 class Event
 {
 
 	static enum ActionEnum
 	{
 		DELETED, CREATED, RENAMED, MODIFIED
-	}		
+	}
 
 	private final Event.ActionEnum _action;
 	private final int _wd;
@@ -19,32 +17,31 @@ class Event
 	private final String _name;
 	private final String _name2;
 
-
 	public static Event deleted(String path)
 	{
-		return new Event(ActionEnum.DELETED, -1, "UNKNOWN",path, null);
+		return new Event(ActionEnum.DELETED, -1, "UNKNOWN", path, null);
 	}
 
 	public static Event modified(String path)
 	{
-		return new Event(ActionEnum.MODIFIED,-1, "UNKNOWN",path, null);
+		return new Event(ActionEnum.MODIFIED, -1, "UNKNOWN", path, null);
 	}
-	
+
 	public static Event created(String path)
 	{
-		return new Event(ActionEnum.CREATED, -1,"UNKNOWN",path, null);
+		return new Event(ActionEnum.CREATED, -1, "UNKNOWN", path, null);
 	}
-	
+
 	public static Event renamed(String from, String to)
 	{
-		return new Event(ActionEnum.RENAMED, -1,"UNKNOWN",from, to);
-	}	
-	
+		return new Event(ActionEnum.RENAMED, -1, "UNKNOWN", from, to);
+	}
+
 	Event(Event.ActionEnum action, int wd, String path, String name)
 	{
-		this(action,wd,path,name,null);
+		this(action, wd, path, name, null);
 	}
-	
+
 	Event(Event.ActionEnum action, int wd, String path, String name, String name2)
 	{
 		_action = action;
@@ -65,11 +62,12 @@ class Event
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		return "Event : " + _action + " wd=" +_wd + ", path="+ _path + " name="+_name + (_name2 != null ? ", name2="+_name2 : "");
+		return "Event : " + _action + " wd=" + _wd + ", path=" + _path + " name=" + _name
+				+ (_name2 != null ? ", name2=" + _name2 : "");
 	}
 
 	public Event.ActionEnum getAction()
@@ -95,5 +93,25 @@ class Event
 	public int getWd()
 	{
 		return _wd;
+	}
+
+	public boolean isCreated()
+	{
+		return getAction() == ActionEnum.CREATED;
+	}
+
+	public boolean isRenamed()
+	{
+		return getAction() == ActionEnum.RENAMED;
+	}
+
+	public boolean isDeleted()
+	{
+		return getAction() == ActionEnum.DELETED;
+	}
+
+	public boolean isModified()
+	{
+		return getAction() == ActionEnum.MODIFIED;
 	}
 }
