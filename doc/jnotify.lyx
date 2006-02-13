@@ -1,0 +1,244 @@
+#LyX 1.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 221
+\textclass article
+\language english
+\inputencoding auto
+\fontscheme default
+\graphics default
+\paperfontsize default
+\papersize Default
+\paperpackage a4
+\use_geometry 0
+\use_amsmath 0
+\use_natbib 0
+\use_numerical_citations 0
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\quotes_times 2
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+
+\layout Title
+
+JNotify
+\layout Author
+
+Omry Yadan (omry at contentobjects dot net)
+\layout Section
+
+JNotify java API
+\layout Standard
+
+JNotify is a java library that allow java application to listen to file
+ system events, such as:
+\layout Itemize
+
+file created.
+\layout Itemize
+
+file modified.
+\layout Itemize
+
+file renamed.
+\layout Itemize
+
+file deleted.
+\layout Standard
+
+JNotify works on both Windows (Windows 2000, XP, Vista) and Linux with JNotify
+ support (Kernel 2.6.14 and above).
+\layout Standard
+
+
+\begin_inset Float algorithm
+placement H
+wide false
+collapsed false
+
+\layout Caption
+
+JNotify usage
+\layout LyX-Code
+
+// to add a watch : 
+\layout LyX-Code
+
+String path = "/home/omry/tmp";
+\layout LyX-Code
+
+// watch mask
+\layout LyX-Code
+
+int mask = JNotify.FILE_CREATED | JNotify.FILE_DELETED 
+\layout LyX-Code
+
+                 | JNotify.FILE_MODIFIED | JNotify.FILE_RENAMED;
+\layout LyX-Code
+
+\layout LyX-Code
+
+//watch subtree?
+\layout LyX-Code
+
+boolean watchSubtree = true;
+\layout LyX-Code
+
+\layout LyX-Code
+
+// add actual watch
+\layout LyX-Code
+
+int watchID = JNotify.addWatch(path, mask, watchSubtree, 
+\layout LyX-Code
+
+              new JNotifyListenerImpl());
+\layout LyX-Code
+
+\layout LyX-Code
+
+// sleep a little, the application will exit if you 
+\layout LyX-Code
+
+// don't (watching is asynchrnous), depending on your 
+\layout LyX-Code
+
+// application, this may not be required
+\layout LyX-Code
+
+try
+\layout LyX-Code
+
+{
+\layout LyX-Code
+
+        Thread.sleep(1000000);
+\layout LyX-Code
+
+}
+\layout LyX-Code
+
+catch (InterruptedException e1)
+\layout LyX-Code
+
+{
+\layout LyX-Code
+
+}
+\layout LyX-Code
+
+\layout LyX-Code
+
+// to remove watch the watch
+\layout LyX-Code
+
+boolean res = JNotify.removeWatch(watchID);
+\layout LyX-Code
+
+if (!res)
+\layout LyX-Code
+
+{
+\layout LyX-Code
+
+        // invalid watch ID specified.
+\layout LyX-Code
+
+}
+\end_inset 
+
+
+\layout Standard
+
+To use JNotify, you need to have the native library (jnotify.dll or jnotify.so)
+ in your java.library.path.
+ to do that, you need to use the -Djava.library.path prameter when you run
+ the java application.
+ for example:
+\layout Standard
+
+java -cp jnotify.jar -Djava.library.path=.
+\layout Section
+
+JNotify native API
+\layout Standard
+
+JNotify uses native library to access the system API required to listen
+ for changes, currenly both Windows and Linux are supported.
+\layout Subsection
+
+Linux
+\layout Standard
+
+JNotify Linux API is a thin wrapper around Linux INotify API
+\newline 
+since Linux INotify API does not support recursive listening on a directory,
+ JNotify add this functionality by createing an INotify watch on every sub
+ directory under the watched directory (this is transparent to the user).
+ this process takes a time which is linear to the number of directories
+ in the tree being recursively watched, and require system resources, namely
+ - INotify watches, which are limited, by default to 8192 watches per processes.
+\layout Standard
+
+if you get an exception like :
+\layout Standard
+
+
+\series bold 
+net.contentobjects.jnotify.linux.JNotifyException_linux: Error watching /home/omry/f
+ile : No space left on device
+\series default 
+
+\newline 
+it means the native inotify watch limit per process has been reached.
+ the solution is to change the limit with a command like this (only root
+ can do it): 
+\layout Standard
+
+
+\series bold 
+echo 32000 > /proc/sys/fs/inotify/max_user_watches
+\newline 
+
+\series default 
+which will set the maximum number of watches per process to 32000.
+\layout Standard
+
+Users of JNotify need to give up some of the functionality of the underlying
+ system, for example, linux supports 
+\series bold 
+IN_CLOSE_NOWRITE
+\series default 
+ event, and windows does not, it means JNotify will not support it.
+ JNotify only support events on basic operations.
+\layout Standard
+
+it is, however, possible to use 
+\series bold 
+net.contentobjects.jnotify.linux.JNotify_linux
+\series default 
+ class direclty, if you do not care about code portablity.
+ this, however, means you will also no benefit from the clean API of JNotify
+ and not from the recursive listening support.
+\layout Subsection
+
+Windows
+\layout Standard
+
+Windows API for file system events is quite hard to use, and has forced
+ me to put most of the logic in C++ code.
+ however, win32 API supports recursive tree listening, which means such
+ listening is much more efficient on Windows then in Linux in terms on system
+ resources required.
+ Like with Linux, it is possible to use 
+\series bold 
+net.contentobjects.jnotify.win32.JNotify_win32
+\series default 
+ directly to gain access to win32 specific events which are not covered
+ by JNotify.
+ this is, again, not recommended, as it costs in portability.
+\the_end
