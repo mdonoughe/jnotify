@@ -68,7 +68,7 @@ JNotify usage
 // to add a watch : 
 \layout LyX-Code
 
-String path = "/home/omry/tmp";
+String path = System.getProperty("user.home");
 \layout LyX-Code
 
 // watch mask
