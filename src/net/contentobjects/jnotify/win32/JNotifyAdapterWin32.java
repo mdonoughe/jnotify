@@ -38,6 +38,7 @@ import net.contentobjects.jnotify.IJNotify;
 import net.contentobjects.jnotify.JNotify;
 import net.contentobjects.jnotify.JNotifyException;
 import net.contentobjects.jnotify.JNotifyListener;
+import net.contentobjects.jnotify.Util;
 
 public class JNotifyAdapterWin32 implements IJNotify
 {
@@ -101,6 +102,11 @@ public class JNotifyAdapterWin32 implements IJNotify
 			_mask = mask;
 			_notifyListener = listener;
 		}
+		
+		public String toString()
+		{
+			return "wd=" + _wd + ", action " + Util.getMaskDesc(_mask);
+		}
 	}
 
 	void notifyChangeEvent(int wd, int action, String rootPath, String filePath)
@@ -138,7 +144,6 @@ public class JNotifyAdapterWin32 implements IJNotify
 					watchData.renameOldName = null;
 					_id2Data.remove(new Integer(wd));
 				}
-				
 			}
 			else
 			{
@@ -148,7 +153,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 		}
 	}
 
-	private String getDebugWinAction(int action)
+	private static String getDebugWinAction(int action)
 	{
 		switch (action)
 		{

@@ -40,6 +40,7 @@ import net.contentobjects.jnotify.IJNotify;
 import net.contentobjects.jnotify.JNotify;
 import net.contentobjects.jnotify.JNotifyException;
 import net.contentobjects.jnotify.JNotifyListener;
+import net.contentobjects.jnotify.Util;
 
 
 /** TODO : added by omry at Dec 11, 2005 : Handle move events*/
@@ -84,7 +85,7 @@ public class JNotifyAdapterLinux implements IJNotify
 	{
 		if (DEBUG)
 		{
-			System.out.println("JNotifyAdapterLinux.addWatch(path="+path+",mask="+getMaskDesc(mask)+", watchSubtree="+watchSubtree+")");
+			System.out.println("JNotifyAdapterLinux.addWatch(path="+path+",mask="+Util.getMaskDesc(mask)+", watchSubtree="+watchSubtree+")");
 		}
 		
 		
@@ -367,37 +368,6 @@ public class JNotifyAdapterLinux implements IJNotify
 			}
 		}
 	}
-	
-	private String getMaskDesc(int mask)
-	{
-		StringBuffer s = new StringBuffer();
-		if ((mask & JNotify.FILE_CREATED) != 0)
-		{
-			s.append("FILE_CREATED|");
-		}
-		if ((mask & JNotify.FILE_DELETED) != 0)
-		{
-			s.append("FILE_DELETED|");
-		}
-		if ((mask & JNotify.FILE_MODIFIED) != 0)
-		{
-			s.append("FILE_MODIFIED|");
-		}
-		if ((mask & JNotify.FILE_RENAMED) != 0)
-		{
-			s.append("FILE_RENAMED|");
-		}
-		if (s.length() > 0)
-		{
-			return s.substring(0, s.length() - 1);
-		}
-		else
-		{
-			return "UNKNOWN";
-		}
-	}
-
-	
 
 	private void debugLinux(String name, int linuxWd, int linuxMask, int cookie)
 	{

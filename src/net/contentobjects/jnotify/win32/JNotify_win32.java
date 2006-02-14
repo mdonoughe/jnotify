@@ -78,7 +78,7 @@ public class JNotify_win32
 		int wd = nativeAddWatch(path, mask, watchSubtree);
 		if (wd < 0)
 		{
-			throw new JNotifyException_win32(getErrorDesc(-wd), -wd);
+			throw new JNotifyException_win32(getErrorDesc(-wd) + " : " + path, -wd);
 		}
 		return wd;
 	}
