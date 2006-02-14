@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>JNotify</TITLE>
+<META NAME="description" CONTENT="JNotify">
+<META NAME="keywords" CONTENT="jnotify">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="jnotify.css">
+
+</HEAD>
+
+<BODY >
+
+<P>
+
+<P>
+
+<P>
+<H1 ALIGN="CENTER">JNotify</H1>
+<DIV CLASS="author_info">
+
+<P ALIGN="CENTER"><STRONG>Omry Yadan (omry at contentobjects dot net)</STRONG></P>
+</DIV>
+<BR>
+
+<H2><A NAME="SECTION00010000000000000000">
+Contents</A>
+</H2>
+<!--Table of Contents-->
+
+<UL CLASS="TofC">
+<LI><A NAME="tex2html6"
+  HREF="jnotify.html#SECTION00020000000000000000">1 JNotify java API</A>
+<LI><A NAME="tex2html7"
+  HREF="jnotify.html#SECTION00030000000000000000">2 JNotify native API</A>
+<UL>
+<LI><A NAME="tex2html8"
+  HREF="jnotify.html#SECTION00031000000000000000">2.1 Linux</A>
+<LI><A NAME="tex2html9"
+  HREF="jnotify.html#SECTION00032000000000000000">2.2 Windows</A>
+</UL></UL>
+<!--End of Table of Contents-->
+
+<P>
+
+<H1><A NAME="SECTION00020000000000000000">
+<SPAN CLASS="arabic">1</SPAN> JNotify java API</A>
+</H1>
+
+<P>
+JNotify is a java library that allow java application to listen to
+file system events, such as:
+
+<P>
+
+<UL>
+<LI>file created.
+</LI>
+<LI>file modified.
+</LI>
+<LI>file renamed.
+</LI>
+<LI>file deleted.
+</LI>
+</UL>
+JNotify works on both Windows (Windows 2000, XP, Vista) and Linux
+with JNotify support (Kernel 2.6.14 and above).
+
+<P>
+
+<DL COMPACT>
+<DT>
+<DD>//&nbsp;to&nbsp;add&nbsp;a&nbsp;watch&nbsp;:&nbsp;
+
+<P>
+String&nbsp;path&nbsp;=&nbsp;System.getProperty(&#34;user.home&#34;);
+
+<P>
+//&nbsp;watch&nbsp;mask
+
+<P>
+int&nbsp;mask&nbsp;=&nbsp;JNotify.FILE_CREATED&nbsp;|&nbsp;JNotify.FILE_DELETED&nbsp;|&nbsp;JNotify.FILE_MODIFIED&nbsp;|&nbsp;JNotify.FILE_RENAMED;
+
+<P>
+//watch&nbsp;subtree?
+
+<P>
+boolean&nbsp;watchSubtree&nbsp;=&nbsp;true;
+
+<P>
+//&nbsp;add&nbsp;actual&nbsp;watch
+
+<P>
+int&nbsp;watchID&nbsp;=&nbsp;JNotify.addWatch(path,&nbsp;mask,&nbsp;watchSubtree,&nbsp;new&nbsp;JNotifyListenerImpl());
+
+<P>
+//&nbsp;sleep&nbsp;a&nbsp;little,&nbsp;the&nbsp;application&nbsp;will&nbsp;exit&nbsp;if&nbsp;you&nbsp;
+
+<P>
+//&nbsp;don't&nbsp;(watching&nbsp;is&nbsp;asynchrnous),&nbsp;depending&nbsp;on&nbsp;your&nbsp;
+
+<P>
+//&nbsp;application,&nbsp;this&nbsp;may&nbsp;not&nbsp;be&nbsp;required
+
+<P>
+try
+
+<P>
+{
+
+<P>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread.sleep(1000000);
+
+<P>
+}
+
+<P>
+catch&nbsp;(InterruptedException&nbsp;e1)
+
+<P>
+{
+
+<P>
+}
+
+<P>
+//&nbsp;to&nbsp;remove&nbsp;watch&nbsp;the&nbsp;watch
+
+<P>
+boolean&nbsp;res&nbsp;=&nbsp;JNotify.removeWatch(watchID);
+
+<P>
+if&nbsp;(!res)
+
+<P>
+{
+
+<P>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;invalid&nbsp;watch&nbsp;ID&nbsp;specified.
+
+<P>
+}
+
+<P>
+</DD>
+</DL>To use JNotify, you need to have the native library (jnotify.dll or
+jnotify.so) in your java.library.path. to do that, you need to use
+the -Djava.library.path prameter when you run the java application.
+for example:
+
+<P>
+java -cp jnotify.jar -Djava.library.path=.
+
+<P>
+
+<H1><A NAME="SECTION00030000000000000000">
+<SPAN CLASS="arabic">2</SPAN> JNotify native API</A>
+</H1>
+
+<P>
+JNotify uses native library to access the system API required to listen
+for changes, currenly both Windows and Linux are supported.
+
+<P>
+
+<H2><A NAME="SECTION00031000000000000000">
+<SPAN CLASS="arabic">2</SPAN>.<SPAN CLASS="arabic">1</SPAN> Linux</A>
+</H2>
+
+<P>
+JNotify Linux API is a thin wrapper around Linux INotify API
+<BR>
+since Linux INotify API does not support recursive listening on a
+directory, JNotify add this functionality by createing an INotify
+watch on every sub directory under the watched directory (this is
+transparent to the user). this process takes a time which is linear
+to the number of directories in the tree being recursively watched,
+and require system resources, namely - INotify watches, which are
+limited, by default to 8192 watches per processes.
+
+<P>
+if you get an exception like :
+
+<P>
+<SPAN  CLASS="textbf">net.contentobjects.jnotify.linux.JNotifyException_linux:
+Error watching /home/omry/file : No space left on device</SPAN>
+<BR>
+it means the native inotify watch limit per process has been reached.
+the solution is to change the limit with a command like this (only
+root can do it): 
+
+<P>
+<SPAN  CLASS="textbf">echo 32000 &gt; /proc/sys/fs/inotify/max_user_watches</SPAN>
+<BR>
+which will set the maximum number of watches per process to 32000.
+
+<P>
+Users of JNotify need to give up some of the functionality of the
+underlying system, for example, linux supports <SPAN  CLASS="textbf">IN_CLOSE_NOWRITE</SPAN>
+event, and windows does not, it means JNotify will not support it.
+JNotify only support events on basic operations.
+
+<P>
+it is, however, possible to use <SPAN  CLASS="textbf">net.contentobjects.jnotify.linux.JNotify_linux</SPAN>
+class direclty, if you do not care about code portablity. this, however,
+means you will also no benefit from the clean API of JNotify and not
+from the recursive listening support.
+
+<P>
+
+<H2><A NAME="SECTION00032000000000000000">
+<SPAN CLASS="arabic">2</SPAN>.<SPAN CLASS="arabic">2</SPAN> Windows</A>
+</H2>
+
+<P>
+Windows API for file system events is quite hard to use, and has forced
+me to put most of the logic in C++ code. however, win32 API supports
+recursive tree listening, which means such listening is much more
+efficient on Windows then in Linux in terms on system resources required.
+Like with Linux, it is possible to use <SPAN  CLASS="textbf">net.contentobjects.jnotify.win32.JNotify_win32</SPAN>
+directly to gain access to win32 specific events which are not covered
+by JNotify. this is, again, not recommended, as it costs in portability.
+<BR><HR>
+<ADDRESS>
+Omry Yadan
+2006-02-14
+</ADDRESS>
+</BODY>
+</HTML>

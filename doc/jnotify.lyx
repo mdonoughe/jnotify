@@ -29,6 +29,14 @@ JNotify
 \layout Author
 
 Omry Yadan (omry at contentobjects dot net)
+\layout Standard
+
+
+\begin_inset LatexCommand \tableofcontents{}
+
+\end_inset 
+
+
 \layout Section
 
 JNotify java API
@@ -52,17 +60,6 @@ file deleted.
 
 JNotify works on both Windows (Windows 2000, XP, Vista) and Linux with JNotify
  support (Kernel 2.6.14 and above).
-\layout Standard
-
-
-\begin_inset Float algorithm
-placement H
-wide false
-collapsed false
-
-\layout Caption
-
-JNotify usage
 \layout LyX-Code
 
 // to add a watch : 
@@ -71,13 +68,13 @@ JNotify usage
 String path = System.getProperty("user.home");
 \layout LyX-Code
 
+\layout LyX-Code
+
 // watch mask
 \layout LyX-Code
 
-int mask = JNotify.FILE_CREATED | JNotify.FILE_DELETED 
-\layout LyX-Code
-
-                 | JNotify.FILE_MODIFIED | JNotify.FILE_RENAMED;
+int mask = JNotify.FILE_CREATED | JNotify.FILE_DELETED | JNotify.FILE_MODIFIED
+ | JNotify.FILE_RENAMED;
 \layout LyX-Code
 
 \layout LyX-Code
@@ -93,10 +90,8 @@ boolean watchSubtree = true;
 // add actual watch
 \layout LyX-Code
 
-int watchID = JNotify.addWatch(path, mask, watchSubtree, 
-\layout LyX-Code
-
-              new JNotifyListenerImpl());
+int watchID = JNotify.addWatch(path, mask, watchSubtree, new JNotifyListenerImpl(
+));
 \layout LyX-Code
 
 \layout LyX-Code
@@ -149,8 +144,7 @@ if (!res)
 \layout LyX-Code
 
 }
-\end_inset 
-
+\layout LyX-Code
 
 \layout Standard
 
