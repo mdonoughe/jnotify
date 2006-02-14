@@ -77,7 +77,7 @@ private:
 	
 	void watchDirectory(WatchData* wd);
 	
-	void unwatchDirectory(int wd);
+	void unwatchDirectory(WatchData* wd);
 	
 	void handlePendingActions();
 public:
