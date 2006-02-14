@@ -15,7 +15,7 @@ public class JNotifyTest
 	public static void main(String[] args) throws IOException
 	{
 		// to add a watch : 
-		String path = "c:/";
+		String path = System.getProperty("user.home");
 		int mask = JNotify.FILE_CREATED | JNotify.FILE_DELETED | JNotify.FILE_MODIFIED
 				| JNotify.FILE_RENAMED;
 		boolean watchSubtree = true;
@@ -48,7 +48,7 @@ public class JNotifyTest
 
 		try
 		{
-			Thread.sleep(2000);
+			Thread.sleep(200000);
 		}
 		catch (InterruptedException e1)
 		{
