@@ -48,7 +48,7 @@ public class JNotifyTest
 
 		try
 		{
-			Thread.sleep(200000);
+			Thread.sleep(2000);
 		}
 		catch (InterruptedException e1)
 		{
