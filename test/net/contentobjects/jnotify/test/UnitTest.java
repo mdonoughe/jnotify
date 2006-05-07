@@ -21,7 +21,7 @@ public class UnitTest extends TestCase
 		super(name);
 	}
 
-	public void _testFlat1() throws Exception
+	public void testFlat1() throws Exception
 	{
 		ArrayList<Command> commands = new ArrayList<Command>();
 		ArrayList<Event> events = new ArrayList<Event>();
@@ -82,11 +82,16 @@ public class UnitTest extends TestCase
 		// rename it
 		commands.add(Command.rename("1", "2"));
 		events.add(Event.renamed("1", "2"));
+		
+		// rename again, to make sure file is still watched.
+		commands.add(Command.rename("2", "3"));
+		events.add(Event.renamed("2", "3"));
+		
 
 		performTest(JNotify.FILE_ANY, false, commands, events);
 	}
 
-	public void _testRecursive() throws Exception
+	public void testRecursive() throws Exception
 	{
 		ArrayList<Command> commands = new ArrayList<Command>();
 		ArrayList<Event> events = new ArrayList<Event>();
@@ -106,13 +111,12 @@ public class UnitTest extends TestCase
 		events.add(Event.created("a/c/d"));
 
 		performTest(JNotify.FILE_ANY, true, commands, events);
-
 	}
 
 	void performTest(int mask, boolean watchSubtree, ArrayList<Command> commands,
 		ArrayList<Event> expectedEvents) throws IOException
 	{
-
+		System.out.println("JUnit : -------------- performTest -------------- :");
 		String rootDir = "$$$_TEST_$$$/";
 		File testRoot = new File(rootDir).getAbsoluteFile();
 		// make sure the dir is empty.
@@ -126,7 +130,7 @@ public class UnitTest extends TestCase
 			
 			wd2 = JNotify.addWatch(testRoot.getName(), mask, watchSubtree, createListener(actualEvents));
 
-			sleep(500);
+//			sleep(500);
 
 			System.out.println("JUnit : Executing commands...");
 			for (int i = 0; i < commands.size(); i++)
@@ -148,15 +152,10 @@ public class UnitTest extends TestCase
 			}
 
 			System.out.println("JUnit : Done, waiting for events to settle...");
-
 			sleep(500);
 
 			System.out.println("JUnit : Done, analyzing events");
 
-			// actual events may be more then expected ,because on windows we
-			// get mofigied for deletions as well.
-			assertTrue("expected=" + expectedEvents.size() + ">" + actualEvents.size() + "=actual",
-				expectedEvents.size() <= actualEvents.size());
 			int expectedIndex = 0, actualIndex = 0;
 			for (; expectedIndex < expectedEvents.size();)
 			{
@@ -164,9 +163,9 @@ public class UnitTest extends TestCase
 				Event actual = actualEvents.get(actualIndex);
 
 				// On windows, the sysetm sends both modified and deleted
-				// in response to file deletion.
+				// in response to file deletion or file rename.
 				// skip modified.
-				if (_isWindows && expected.isDeleted() && actual.isModified())
+				if (_isWindows && (expected.isDeleted() || expected.isRenamed()) && actual.isModified())
 				{
 					// skip actual event
 					actualIndex++;
@@ -191,7 +190,7 @@ public class UnitTest extends TestCase
 //			sleep(500); // hack
 			if (!res)
 			{
-				System.err.println("JUnit: Warning, failed to remove watch");
+				System.out.println("JUnit: Warning, failed to remove watch");
 			}
 			System.out.println("JUnit : Deleting directory " + testRoot);
 			
@@ -205,9 +204,8 @@ public class UnitTest extends TestCase
 		{
 			Thread.sleep(ms);
 		}
-		catch (InterruptedException e1)
+		catch (InterruptedException e)
 		{
-			// nop
 		}
 	}
 
@@ -247,14 +245,14 @@ public class UnitTest extends TestCase
 		};
 	}
 
-	public void _testRemoveWatch1() throws JNotifyException
+	public void testRemoveWatch1() throws JNotifyException
 	{
 		int wd = JNotify.addWatch(".", JNotify.FILE_ANY, false, new JNotifyAdapter());
 		boolean removeWatch = JNotify.removeWatch(wd);
 		assertTrue(removeWatch);
 	}
 
-	public void _testRemoveWatch2() throws IOException
+	public void testRemoveWatch2() throws IOException
 	{
 		ArrayList<Command> commands = new ArrayList<Command>();
 		ArrayList<Event> events = new ArrayList<Event>();
