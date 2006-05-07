@@ -42,8 +42,10 @@ WatchData::WatchData()
 
 WatchData::~WatchData()
 {
+	signalEvent();
 	if (_path != NULL) free(_path);
 	CloseHandle(_hDir);
+	CloseHandle(_watchEventObject);
 }
 
 WatchData::WatchData(const WCHAR* path, int mask, bool watchSubtree, LPOVERLAPPED_COMPLETION_ROUTINE callback,ChangeCallback changeCallback)
@@ -56,11 +58,6 @@ WatchData::WatchData(const WCHAR* path, int mask, bool watchSubtree, LPOVERLAPPE
 	_changeCallback(changeCallback)
 {
 	_path = _wcsdup(path); 
-	_overLapped.Internal = 0;
-	_overLapped.InternalHigh = 0;
-	_overLapped.Offset = 0;
-	_overLapped.OffsetHigh = 0;
-	_overLapped.hEvent = (HANDLE)_watchId;
 	_hDir = CreateFileW(_path,
 						 FILE_LIST_DIRECTORY | GENERIC_READ | GENERIC_WRITE,
 						 FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
@@ -71,6 +68,14 @@ WatchData::WatchData(const WCHAR* path, int mask, bool watchSubtree, LPOVERLAPPE
 	{
 		throw GetLastError();
 	}
+	
+	_overLapped.Internal = 0;
+	_overLapped.InternalHigh = 0;
+	_overLapped.Offset = 0;
+	_overLapped.OffsetHigh = 0;
+	_overLapped.hEvent = (HANDLE)_watchId;
+	
+	_watchEventObject = CreateEvent(NULL, FALSE,FALSE, NULL);
 	
 }
 
@@ -103,4 +108,16 @@ int WatchData::watchDirectory()
 	{
 		return 0;
 	}
+}
+
+void WatchData::waitForEvent()
+{
+	debug("+waitForEvent %d ", _watchId);
+	WaitForSingleObjectEx(_watchEventObject, INFINITE, TRUE);
+	debug("-waitForEvent %d ", _watchId);
+}
+
+void WatchData::signalEvent()
+{
+	SetEvent(_watchEventObject);
 }

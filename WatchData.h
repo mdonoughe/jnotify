@@ -39,16 +39,15 @@
 #include <winnt.h>
 #include <string>
 
-
 using namespace std;
 
 typedef void(*ChangeCallback)(int watchID, int action, const WCHAR* rootPath, const WCHAR* filePath);
-
 
 class WatchData
 {
 private:	
 	static int _counter;
+	HANDLE _watchEventObject;
 	WCHAR* _path;
 	int _watchId;
 	HANDLE _hDir;
@@ -76,6 +75,9 @@ public:
 	
 	// cancel pending watch on the hDir, returns 0 if okay or errorCode otherwise.
 	int unwatchDirectory();
+	
+	void waitForEvent();
+	void signalEvent();
 };
 
 #endif /*WATCHDATA_H_*/

@@ -39,7 +39,7 @@
 #include "Lock.h"
 
 Lock _logLoc;
-bool dbg = true;
+bool dbg = false;
 void debug(char *format, ...)
 {
 	if (dbg)

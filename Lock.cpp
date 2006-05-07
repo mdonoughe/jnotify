@@ -38,29 +38,15 @@
 
 Lock::Lock()
 {
-	_owner = true;
 	_cSection = new CRITICAL_SECTION();
 	InitializeCriticalSection(_cSection);
-}
-
-Lock::Lock(CRITICAL_SECTION *cSection, bool locked)
-	: _cSection(cSection)
-{
-	_owner = false;
-	if (locked)
-	{
-		lock();
-	}
 }
 
 Lock::~Lock()
 {
 	LeaveCriticalSection(_cSection);
-	if (_owner)
-	{
-		DeleteCriticalSection(_cSection);
-		delete _cSection;
-	}
+	DeleteCriticalSection(_cSection);
+	delete _cSection;
 }
 
 void Lock::lock()

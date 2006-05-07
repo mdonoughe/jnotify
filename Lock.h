@@ -32,7 +32,17 @@
 
 
  
-
+/**
+ * This class is a auto-release lock.
+ * there are two modes of usage.
+ * 1. create with default constructor:
+ * 		in this mode, the lock will create its own CRITICAL_SECTION, and you 
+ * 		are responsible to call lock() and unlock() when you need to lock it.
+ * 2. use the Lock(CRITICAL_SECTION *cSection, bool locked) contructor:
+ * 		in this mode, you specify the critical section in construction, and 
+ * 		a boolean flag that specify if the critical section is to be locked.
+ */
+ 
 #ifndef LOCK_H_
 #define LOCK_H_
 
@@ -40,13 +50,11 @@
 
 class Lock
 {
-	bool _owner;
 	CRITICAL_SECTION *_cSection;
 public:
 	Lock();
 	Lock(CRITICAL_SECTION *cSection, bool locked);
 	virtual ~Lock();
-	
 	void lock();
 	void unlock();
 };
