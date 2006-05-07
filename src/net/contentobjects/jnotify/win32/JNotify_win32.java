@@ -71,8 +71,6 @@ public class JNotify_win32
 	
 	private static IWin32NotifyListener _notifyListener;
 	
-	
-	
 	public static int addWatch(String path, long mask, boolean watchSubtree) throws JNotifyException
 	{
 		int wd = nativeAddWatch(path, mask, watchSubtree);
@@ -82,11 +80,13 @@ public class JNotify_win32
 		}
 		return wd;
 	}
+
 	
 	public static void removeWatch(int wd)
 	{
 		nativeRemoveWatch(wd);
 	}
+	
 	
 	public static void callbackProcessEvent(int wd, int action, String rootPath, String filePath)
 	{
