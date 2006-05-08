@@ -64,7 +64,7 @@ void ChangeCallbackImpl(int watchID, int action, const WCHAR* rootPath, const WC
 	if (_initialized == NOT_INITIALIZED)
 	{
 		bool failed = false;
-		_jvm->AttachCurrentThread((void **)&_env, NULL);
+		_jvm->AttachCurrentThreadAsDaemon((void **)&_env, NULL);
 		char className[] = "net/contentobjects/jnotify/win32/JNotify_win32";
 		_clazz = _env->FindClass(className);
 		if (_clazz == NULL)
