@@ -74,7 +74,7 @@ void Win32FSHook::init(ChangeCallback callback)
 
 Win32FSHook::~Win32FSHook()
 {
-	debug("Win32FSHook destructor");
+	debug("+Win32FSHook destructor");
 	// terminate thread.
 	_isRunning = false;
 	SetEvent(_mainLoopEvent);
@@ -83,6 +83,7 @@ Win32FSHook::~Win32FSHook()
 	CloseHandle(_mainLoopThreadHandle);
 	CloseHandle(_mainLoopEvent);
 	DeleteCriticalSection(&_cSection);
+	debug("-Win32FSHook destructor");
 }
 
 void Win32FSHook::remove_watch(int wd)
@@ -193,6 +194,7 @@ void CALLBACK Win32FSHook::changeCallback(DWORD dwErrorCode, DWORD dwNumberOfByt
 
 DWORD WINAPI Win32FSHook::mainLoop( LPVOID lpParam )
 {
+	debug("mainLoop starts");
 	Win32FSHook* _this = (Win32FSHook*)lpParam;
 	while (_this->_isRunning)
 	{
@@ -203,7 +205,7 @@ DWORD WINAPI Win32FSHook::mainLoop( LPVOID lpParam )
 			WaitForSingleObjectEx(_this->_mainLoopEvent, INFINITE, TRUE);
 		}
 	}
-	
+	debug("mainLoop exits");
 	return 0;
 }
 

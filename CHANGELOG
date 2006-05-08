@@ -2,6 +2,7 @@
 ------------------------------------
 Changes in jnotify win32 native code
 ------------------------------------
+08/05/2006 : Omry : Fixed a problem that prevented JVM from exiting properly.
 07/05/2006 : Omry : win32 code no longer crash JVM some times.
 07/05/2006 : Omry : win32 code api is now synchrnous.
 04/01/2006 : Omry : Unified build for windows and linux from the same ant build (on linux)
