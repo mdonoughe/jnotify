@@ -7,8 +7,8 @@
 <toolChain id="cdt.managedbuild.toolchain.gnu.so.debug.431640442" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.so.debug">
 <tool command="gcc" id="cdt.managedbuild.tool.gnu.c.compiler.so.debug.1057402078" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.so.debug">
 <option id="gnu.c.compiler.option.include.paths.956645507" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="/usr/local/jdk1.5.0_04/include/"/>
-<listOptionValue builtIn="false" value="/usr/local/jdk1.5.0_04/include//linux"/>
+<listOptionValue builtIn="false" value="/usr/lib/j2sdk1.5-sun/include"/>
+<listOptionValue builtIn="false" value="/usr/lib/j2sdk1.5-sun/include/linux"/>
 </option>
 <option id="gnu.c.compiler.option.warnings.allwarn.1190787069" superClass="gnu.c.compiler.option.warnings.allwarn" value="true" valueType="boolean"/>
 </tool>
@@ -25,8 +25,8 @@
 <toolChain id="cdt.managedbuild.toolchain.gnu.so.release.1021035318" name="GCC Tool Chain" superClass="cdt.managedbuild.toolchain.gnu.so.release">
 <tool command="gcc" id="cdt.managedbuild.tool.gnu.c.compiler.so.release.1090419432" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.so.release">
 <option id="gnu.c.compiler.option.include.paths.87943159" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="/usr/local/jdk1.5.0_04/include/"/>
-<listOptionValue builtIn="false" value="/usr/local/jdk1.5.0_04/include/linux"/>
+<listOptionValue builtIn="false" value="/usr/lib/j2sdk1.5-sun/include/"/>
+<listOptionValue builtIn="false" value="/usr/lib/j2sdk1.5-sun/include/linux"/>
 </option>
 </tool>
 <tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.compiler.so.release.257455867" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.so.release"/>
