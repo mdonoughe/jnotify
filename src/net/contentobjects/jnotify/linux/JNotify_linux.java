@@ -35,7 +35,7 @@ import net.contentobjects.jnotify.JNotifyException;
 
 public class JNotify_linux
 {
-	private static final boolean DEBUG = false;
+	static final boolean DEBUG = false;
 	
 	static
 	{
@@ -108,10 +108,7 @@ public class JNotify_linux
 			throw new JNotifyException_linux("Error watching " + path + " : " + getErrorDesc(-wd), -wd);
 		}
 		
-		if (DEBUG)
-		{
-			System.out.println(wd + " = JNotify_linux.addWatch("+ path + "," + getMaskDesc(mask)+ ")");
-		}
+		debug(wd + " = JNotify_linux.addWatch("+ path + "," + getMaskDesc(mask)+ ")");
 		
 		return wd;
 	}
@@ -119,10 +116,7 @@ public class JNotify_linux
 	public static void removeWatch(int wd) throws JNotifyException
 	{
 		int ret = nativeRemoveWatch(wd);
-		if (DEBUG)
-		{
-			System.out.println(ret + " = JNotify_linux.removeWatch("+ wd + ")");
-		}
+		debug(ret + " = JNotify_linux.removeWatch("+ wd + ")");
 		if (ret != 0)
 		{
 			throw new JNotifyException_linux("Error removing watch " + wd, ret);
@@ -145,10 +139,7 @@ public class JNotify_linux
 	
 	static void callbackProcessEvent(String name, int wd, int mask, int cookie)
 	{
-		if (DEBUG)
-		{
-			System.out.println("JNotify.event(name=" + name + ", wd="+ wd+", " + getMaskDesc(mask)+ (cookie != 0 ? ", cookie=" +cookie : "" )+ ")");
-		}
+		debug("JNotify.event(name=" + name + ", wd="+ wd+", " + getMaskDesc(mask)+ (cookie != 0 ? ", cookie=" +cookie : "" )+ ")");
 		
 		if (_notifyListener != null)
 		{
@@ -202,6 +193,15 @@ public class JNotify_linux
 		if (lIN_Q_OVERFLOW) s += "IN_Q_OVERFLOW|";
 		if (lIN_IGNORED) s += "IN_IGNORED|";
 		return s;
+	}
+
+	
+	static void debug(String msg)
+	{
+		if (DEBUG)
+		{
+			System.err.println(msg);
+		}
 	}
 
 	
