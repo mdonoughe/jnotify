@@ -23,8 +23,8 @@ public class UnitTest extends TestCase
 
 	public void testFlat1() throws Exception
 	{
-		ArrayList<Command> commands = new ArrayList<Command>();
-		ArrayList<Event> events = new ArrayList<Event>();
+		ArrayList commands = new ArrayList();
+		ArrayList events = new ArrayList();
 
 		// create a dir
 		commands.add(Command.createDir("test"));
@@ -42,8 +42,8 @@ public class UnitTest extends TestCase
 
 	public void testDelete() throws Exception
 	{
-		ArrayList<Command> commands = new ArrayList<Command>();
-		ArrayList<Event> events = new ArrayList<Event>();
+		ArrayList commands = new ArrayList();
+		ArrayList events = new ArrayList();
 
 		// create a dir
 		commands.add(Command.createDir("test"));
@@ -57,8 +57,8 @@ public class UnitTest extends TestCase
 
 	public void testFlat2() throws Exception
 	{
-		ArrayList<Command> commands = new ArrayList<Command>();
-		ArrayList<Event> events = new ArrayList<Event>();
+		ArrayList commands = new ArrayList();
+		ArrayList events = new ArrayList();
 
 		// create a dir
 		commands.add(Command.createDir("test"));
@@ -93,8 +93,9 @@ public class UnitTest extends TestCase
 
 	public void testRecursive() throws Exception
 	{
-		ArrayList<Command> commands = new ArrayList<Command>();
-		ArrayList<Event> events = new ArrayList<Event>();
+		ArrayList commands = new ArrayList();
+		ArrayList events = new ArrayList();
+
 
 		commands.add(Command.createDir("a"));
 		events.add(Event.created("a"));
@@ -113,8 +114,8 @@ public class UnitTest extends TestCase
 		performTest(JNotify.FILE_ANY, true, commands, events);
 	}
 
-	void performTest(int mask, boolean watchSubtree, ArrayList<Command> commands,
-		ArrayList<Event> expectedEvents) throws IOException
+	void performTest(int mask, boolean watchSubtree, ArrayList commands,
+		ArrayList expectedEvents) throws IOException
 	{
 		System.out.println("JUnit : -------------- performTest -------------- :");
 		String rootDir = "$$$_TEST_$$$/";
@@ -126,7 +127,7 @@ public class UnitTest extends TestCase
 		int wd2 = -1;
 		try
 		{
-			final ArrayList<Event> actualEvents = new ArrayList<Event>();
+			final ArrayList actualEvents = new ArrayList();
 			
 			wd2 = JNotify.addWatch(testRoot.getName(), mask, watchSubtree, createListener(actualEvents));
 
@@ -135,7 +136,7 @@ public class UnitTest extends TestCase
 			System.out.println("JUnit : Executing commands...");
 			for (int i = 0; i < commands.size(); i++)
 			{
-				Command command = commands.get(i);
+				Command command = (Command) commands.get(i);
 				try
 				{
 					System.out.println("JUnit : Action " + command);
@@ -152,15 +153,15 @@ public class UnitTest extends TestCase
 			}
 
 			System.out.println("JUnit : Done, waiting for events to settle...");
-			sleep(500);
+			sleep(1000);
 
 			System.out.println("JUnit : Done, analyzing events");
 
 			int expectedIndex = 0, actualIndex = 0;
 			for (; expectedIndex < expectedEvents.size();)
 			{
-				Event expected = expectedEvents.get(expectedIndex);
-				Event actual = actualEvents.get(actualIndex);
+				Event expected = (Event) expectedEvents.get(expectedIndex);
+				Event actual = (Event) actualEvents.get(actualIndex);
 
 				// On windows, the sysetm sends both modified and deleted
 				// in response to file deletion or file rename.
@@ -209,14 +210,14 @@ public class UnitTest extends TestCase
 		}
 	}
 
-	private JNotifyListener createListener(final ArrayList<Event> actualEvents)
+	private JNotifyListener createListener(final ArrayList actualEvents)
 	{
 		return new JNotifyListener()
 		{
 
 			public void fileRenamed(int wd, String rootPath, String oldName, String newName)
 			{
-				Event event = new Event(Event.ActionEnum.RENAMED, wd, rootPath, oldName,
+				Event event = new Event(Event.RENAMED, wd, rootPath, oldName,
 					newName);
 				System.out.println("JUnit : " + event);
 				actualEvents.add(event);
@@ -224,21 +225,21 @@ public class UnitTest extends TestCase
 
 			public void fileModified(int wd, String rootPath, String name)
 			{
-				Event event = new Event(Event.ActionEnum.MODIFIED, wd, rootPath, name);
+				Event event = new Event(Event.MODIFIED, wd, rootPath, name);
 				System.out.println("JUnit : " + event);
 				actualEvents.add(event);
 			}
 
 			public void fileDeleted(int wd, String rootPath, String name)
 			{
-				Event event = new Event(Event.ActionEnum.DELETED, wd, rootPath, name);
+				Event event = new Event(Event.DELETED, wd, rootPath, name);
 				System.out.println("JUnit : " + event);
 				actualEvents.add(event);
 			}
 
 			public void fileCreated(int wd, String rootPath, String name)
 			{
-				Event event = new Event(Event.ActionEnum.CREATED, wd, rootPath, name);
+				Event event = new Event(Event.CREATED, wd, rootPath, name);
 				System.out.println("JUnit : " + event);
 				actualEvents.add(event);
 			}
@@ -254,8 +255,8 @@ public class UnitTest extends TestCase
 
 	public void testRemoveWatch2() throws IOException
 	{
-		ArrayList<Command> commands = new ArrayList<Command>();
-		ArrayList<Event> events = new ArrayList<Event>();
+		ArrayList commands = new ArrayList();
+		ArrayList events = new ArrayList();
 
 		commands.add(Command.createDir("a"));
 		events.add(Event.created("a"));

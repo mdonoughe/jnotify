@@ -16,9 +16,11 @@ public class JNotifyTest
 	{
 		// to add a watch : 
 		String path = System.getProperty("user.home");
+//		path += "/dev/";
 		int mask = JNotify.FILE_CREATED | JNotify.FILE_DELETED | JNotify.FILE_MODIFIED
 				| JNotify.FILE_RENAMED;
 		boolean watchSubtree = true;
+		System.err.println("Adding a watch on " + path);
 		int watchID = JNotify.addWatch(path, mask, watchSubtree, new JNotifyListener()
 		{
 			public void fileRenamed(int wd, String rootPath, String oldName, String newName)
@@ -46,9 +48,11 @@ public class JNotifyTest
 			}
 		});
 
+		System.err.println("done");
+		
 		try
 		{
-			Thread.sleep(2000);
+			Thread.sleep(2000000);
 		}
 		catch (InterruptedException e1)
 		{
