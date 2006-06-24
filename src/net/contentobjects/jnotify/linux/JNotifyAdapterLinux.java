@@ -47,8 +47,6 @@ import net.contentobjects.jnotify.Util;
 
 public class JNotifyAdapterLinux implements IJNotify
 {
-	private final static boolean DEBUG = false;
-	
 	private Hashtable _linuxWd2Wd;
 	private Hashtable _id2Data;
 	
@@ -83,10 +81,7 @@ public class JNotifyAdapterLinux implements IJNotify
 	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener)
 		throws JNotifyException
 	{
-		if (DEBUG)
-		{
-			System.out.println("JNotifyAdapterLinux.addWatch(path="+path+",mask="+Util.getMaskDesc(mask)+", watchSubtree="+watchSubtree+")");
-		}
+		JNotify_linux.debug("JNotifyAdapterLinux.addWatch(path="+path+",mask="+Util.getMaskDesc(mask)+", watchSubtree="+watchSubtree+")");
 		
 		
 		// map mask to linux inotify mask.
@@ -161,18 +156,18 @@ public class JNotifyAdapterLinux implements IJNotify
 			throw new RuntimeException("!parentWatch._user");
 		}
 		
-		if (root.isDirectory())
+		if (root.isDirectory()) 
 		{
 			// root was already registered by the calling method.
 			if (!isRoot)
 			{
 				try
 				{
-					createWatch(parentWatch, false, root, parentWatch._mask, parentWatch._linuxMask, parentWatch._watchSubtree, null);
+					createWatch(parentWatch, false, root, parentWatch._mask, parentWatch._linuxMask, parentWatch._watchSubtree, parentWatch._listener);
 				}
 				catch (JNotifyException e)
 				{
-					System.out.println("registerToSubTree : warning, failed to register " + root + " :" + e.getMessage());
+					System.err.println("registerToSubTree : warning, failed to register " + root + " :" + e.getMessage());
 					if (e.getErrorCode() == JNotifyException.ERROR_WATCH_LIMIT_REACHED)
 					{
 						throw e;
@@ -206,10 +201,7 @@ public class JNotifyAdapterLinux implements IJNotify
 
 	public boolean removeWatch(int wd) throws JNotifyException
 	{
-		if (DEBUG)
-		{
-			System.out.println("JNotifyAdapterLinux.removeWatch("+ wd+ ")");
-		}
+		JNotify_linux.debug("JNotifyAdapterLinux.removeWatch("+ wd+ ")");
 		
 		synchronized (_id2Data)
 		{
@@ -269,7 +261,8 @@ public class JNotifyAdapterLinux implements IJNotify
 
 	protected void notifyChangeEvent(String name, int linuxWd, int linuxMask, int cookie)
 	{
-		if (DEBUG)
+		
+		if (JNotify_linux.DEBUG)
 		{
 			debugLinux(name, linuxWd, linuxMask, cookie);
 		}
@@ -319,10 +312,7 @@ public class JNotifyAdapterLinux implements IJNotify
 						}
 						else
 						{
-							if (DEBUG)
-							{
-								System.out.println("Assuming already sent event for " + newRootFile.getPath());
-							}
+							JNotify_linux.debug("Assuming already sent event for " + newRootFile.getPath());
 						}
 					}
 				}
@@ -413,7 +403,7 @@ public class JNotifyAdapterLinux implements IJNotify
 		{
 			path = name;
 		}
-		System.out.println("Linux event : wd=" + linuxWd + " | " + s + " path: " + path + (cookie != 0 ? ", cookie=" + cookie : ""));
+		JNotify_linux.debug("Linux event : wd=" + linuxWd + " | " + s + " path: " + path + (cookie != 0 ? ", cookie=" + cookie : ""));
 	}
 
 	private static class WatchData
@@ -433,6 +423,10 @@ public class JNotifyAdapterLinux implements IJNotify
 
 		WatchData(WatchData parentWatchData,boolean user, String path, int wd, int linuxWd, int mask, int linuxMask, boolean watchSubtree, JNotifyListener listener)
 		{
+			if (listener == null)
+			{
+				throw new IllegalArgumentException("Null listener");
+			}
 			_parentWatchData = parentWatchData;
 			_user = user;
 			_subWd = new ArrayList();
@@ -446,7 +440,7 @@ public class JNotifyAdapterLinux implements IJNotify
 			
 			if (parentWatchData != null)
 			{
-				parentWatchData.addSubwatch1(_linuxWd);
+				parentWatchData.addSubwatch(_linuxWd);
 			}
 		}
 		
@@ -504,7 +498,7 @@ public class JNotifyAdapterLinux implements IJNotify
 			}
 		}
 
-		void addSubwatch1(int linuxWd)
+		void addSubwatch(int linuxWd)
 		{
 			_subWd.add(new Integer(linuxWd));
 		}
