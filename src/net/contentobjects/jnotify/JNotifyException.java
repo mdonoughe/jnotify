@@ -4,9 +4,10 @@ import java.io.IOException;
 
 public abstract class JNotifyException extends IOException
 {
-	public static int ERROR_UNSPECIFIED = 1;
-	public static int ERROR_WATCH_LIMIT_REACHED = 2;
-	public static int ERROR_PERMISSION_DENIED = 3;
+	public final static int ERROR_UNSPECIFIED = 1;
+	public final static int ERROR_WATCH_LIMIT_REACHED = 2;
+	public final static int ERROR_PERMISSION_DENIED = 3;
+	public final static int ERROR_NO_SUCH_FILE_OR_DIRECTORY = 4;
 	
 	
 	protected final int _systemErrorCode;
