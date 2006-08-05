@@ -18,7 +18,7 @@ public class JNotifyTest
 		try
 		{
 			// to add a watch : 
-			String path = System.getProperty("user.home") + "/tmp/sdd";
+			String path = System.getProperty("user.home") + "/tmp/";
 			//		path += "/dev/";
 			int mask = JNotify.FILE_CREATED | JNotify.FILE_DELETED
 					| JNotify.FILE_MODIFIED | JNotify.FILE_RENAMED;
