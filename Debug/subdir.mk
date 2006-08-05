@@ -19,10 +19,10 @@ net_contentobjects_jnotify_linux_JNotify_linux.d \
 %.o: $(ROOT)/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
-	@echo gcc -I/usr/local/jdk1.5.0_04/include/ -I/usr/local/jdk1.5.0_04/include//linux -O0 -g3 -Wall -c -fmessage-length=0 -o$@ $<
-	@gcc -I/usr/local/jdk1.5.0_04/include/ -I/usr/local/jdk1.5.0_04/include//linux -O0 -g3 -Wall -c -fmessage-length=0 -o$@ $< && \
+	@echo gcc -I/usr/lib/j2sdk1.5-sun/include -I/usr/lib/j2sdk1.5-sun/include/linux -O0 -g3 -Wall -c -fmessage-length=0 -fPIC -o$@ $<
+	@gcc -I/usr/lib/j2sdk1.5-sun/include -I/usr/lib/j2sdk1.5-sun/include/linux -O0 -g3 -Wall -c -fmessage-length=0 -fPIC -o$@ $< && \
 	echo -n $(@:%.o=%.d) $(dir $@) > $(@:%.o=%.d) && \
-	gcc -MM -MG -P -w -I/usr/local/jdk1.5.0_04/include/ -I/usr/local/jdk1.5.0_04/include//linux -O0 -g3 -Wall -c -fmessage-length=0  $< >> $(@:%.o=%.d)
+	gcc -MM -MG -P -w -I/usr/lib/j2sdk1.5-sun/include -I/usr/lib/j2sdk1.5-sun/include/linux -O0 -g3 -Wall -c -fmessage-length=0 -fPIC  $< >> $(@:%.o=%.d)
 	@echo 'Finished building: $<'
 	@echo ' '
 
