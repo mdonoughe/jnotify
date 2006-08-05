@@ -11,6 +11,7 @@
 <listOptionValue builtIn="false" value="/usr/lib/j2sdk1.5-sun/include/linux"/>
 </option>
 <option id="gnu.c.compiler.option.warnings.allwarn.1190787069" superClass="gnu.c.compiler.option.warnings.allwarn" value="true" valueType="boolean"/>
+<option id="gnu.c.compiler.option.misc.other.438269096" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -fPIC" valueType="string"/>
 </tool>
 <tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.compiler.so.debug.32675467" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.so.debug"/>
 <tool command="gcc" id="cdt.managedbuild.tool.gnu.c.linker.so.debug.1097698460" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.so.debug">
@@ -28,6 +29,10 @@
 <listOptionValue builtIn="false" value="/usr/lib/j2sdk1.5-sun/include/"/>
 <listOptionValue builtIn="false" value="/usr/lib/j2sdk1.5-sun/include/linux"/>
 </option>
+<option id="gnu.c.compiler.option.warnings.pedantic.463182518" superClass="gnu.c.compiler.option.warnings.pedantic" value="false" valueType="boolean"/>
+<option id="gnu.c.compiler.option.warnings.pedantic.error.1540288417" superClass="gnu.c.compiler.option.warnings.pedantic.error" value="false" valueType="boolean"/>
+<option id="gnu.c.compiler.option.warnings.toerrors.1855333697" superClass="gnu.c.compiler.option.warnings.toerrors" value="true" valueType="boolean"/>
+<option id="gnu.c.compiler.option.misc.other.1442738879" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -fPIC" valueType="string"/>
 </tool>
 <tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.compiler.so.release.257455867" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.so.release"/>
 <tool command="gcc" id="cdt.managedbuild.tool.gnu.c.linker.so.release.1261057907" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.so.release"/>
