@@ -20,7 +20,8 @@ public class UnitTest extends TestCase
 	{
 		super(name);
 	}
-
+	
+	
 	public void testFlat1() throws Exception
 	{
 		ArrayList commands = new ArrayList();
@@ -113,6 +114,41 @@ public class UnitTest extends TestCase
 
 		performTest(JNotify.FILE_ANY, true, commands, events);
 	}
+	
+    public void testRecursive2() throws Exception
+    {
+        final ArrayList commands = new ArrayList();
+        final ArrayList events = new ArrayList();
+
+        commands.add(Command.createDir("1"));
+        events.add(Event.created("1"));
+        commands.add(Command.createFile("1/2"));
+        events.add(Event.created("1/2"));
+        
+        performTest(JNotify.FILE_ANY, true, commands, events);
+    }
+
+    public void testRecursive3() throws Exception
+    {
+        final ArrayList commands = new ArrayList();
+        final ArrayList events = new ArrayList();
+
+        commands.add(Command.createDir("1"));
+        events.add(Event.created("1"));
+
+        commands.add(Command.createFile("1/2"));
+        events.add(Event.created("1/2"));
+
+        commands.add(Command.createSleep(300));
+        
+        commands.add(Command.delete("1/2"));
+        events.add(Event.deleted("1/2"));
+        
+        commands.add(Command.delete("1"));
+        events.add(Event.deleted("1"));
+
+        performTest(JNotify.FILE_ANY, true, commands, events);
+    }	
 
 	void performTest(int mask, boolean watchSubtree, ArrayList commands,
 		ArrayList expectedEvents) throws IOException
@@ -188,7 +224,7 @@ public class UnitTest extends TestCase
 		{
 			System.out.println("JUnit : Removing watch " + wd2);
 			boolean res = JNotify.removeWatch(wd2);
-//			sleep(500); // hack
+			//sleep(500000); // hack
 			if (!res)
 			{
 				System.out.println("JUnit: Warning, failed to remove watch");
@@ -246,6 +282,7 @@ public class UnitTest extends TestCase
 		};
 	}
 
+	/*
 	public void testRemoveWatch1() throws JNotifyException
 	{
 		int wd = JNotify.addWatch(".", JNotify.FILE_ANY, false, new JNotifyAdapter());
@@ -274,12 +311,46 @@ public class UnitTest extends TestCase
 
 		performTest(JNotify.FILE_ANY, true, commands, events);
 	}
+	*/
 
 	private void assertMatch(Event expected, Event actual)
 	{
-		assertEquals(expected.getAction(), actual.getAction());
-		assertEquals(normalizePath(expected.getName()), normalizePath(actual.getName()));
-		assertEquals(normalizePath(expected.getName2()), normalizePath(actual.getName2()));
+		try
+		{
+			assertEquals(expected.getAction(), actual.getAction());
+		} 
+		catch (Error e)
+		{
+			System.out.println("Compare action failed:");
+			System.out.println("Expected: " + expected.getAction());
+			System.out.println("Actual:" + actual.getAction());
+			throw e;
+		}
+		
+		try
+		{
+			assertEquals(normalizePath(expected.getName()), normalizePath(actual.getName()));
+		} 
+		catch (Error e)
+		{
+			System.out.println("Compare name failed:");
+			System.out.println("Expected: " + expected.getName());
+			System.out.println("Actual:" + actual.getName());
+			throw e;
+		}
+
+		try
+		{
+			assertEquals(normalizePath(expected.getName2()), normalizePath(actual.getName2()));
+		} 
+		catch (Error e)
+		{
+			System.out.println("Compare name2:");
+			System.out.println("Expected: " + expected.getName2());
+			System.out.println("Actual:" + actual.getName2());
+			throw e;
+		}
+		
 	}
 
 	static void deleteDirectory(File file)
