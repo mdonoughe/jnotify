@@ -200,7 +200,7 @@ public class JNotify_linux
 	{
 		if (DEBUG)
 		{
-			System.err.println(msg);
+			System.out.println(msg);
 		}
 	}
 
