@@ -155,8 +155,18 @@ public class JNotifyAdapterLinux implements IJNotify
 		{
 			throw new RuntimeException("!parentWatch._user");
 		}
+
+		// make sure user really requested to be notified on this event.
+		// (in case of recursive listening, this IN_CREATE flag is always on, even if 
+		// the user is not interester in creation events).
+		if (fireCreatedEvents && (parentWatch._mask & JNotify.FILE_CREATED) != 0)
+		{
+			String name = root.toString().substring(parentWatch._path.length()+1);
+			parentWatch.notifyFileCreated(name);
+		}
+
 		
-		if (root.isDirectory()) 
+		if (root.isDirectory())
 		{
 			// root was already registered by the calling method.
 			if (!isRoot)
@@ -175,17 +185,6 @@ public class JNotifyAdapterLinux implements IJNotify
 					// else, on any other error, try subtree anyway..
 				}
 			}
-			
-			// make sure user really requested to be notified on this event.
-			// (in case of recursive listening, this IN_CREATE flag is always on, even if 
-			// the user is not interester in creation events).
-			if (fireCreatedEvents && (parentWatch._mask & JNotify.FILE_CREATED) != 0)
-			{
-				String name = root.toString().substring(parentWatch._path.length()+1);
-				parentWatch.notifyFileCreated(name);
-			}
-			
-			
 			
 			String files[] = root.list();
 			if (files != null)
@@ -532,7 +531,7 @@ public class JNotifyAdapterLinux implements IJNotify
 			}
 			else // auto watch.
 			{
-				outName = _path.substring(getParentWatch()._path.length() + 1);
+				outName = _path.substring(getParentWatch()._path.length() + 1) + File.separatorChar + name;
 			}
 			return outName;			
 		}
