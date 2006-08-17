@@ -1,9 +1,9 @@
 ------------------------------------
 Changes in Jnotify (java)
 ------------------------------------
-16.8.2006  : Omry : fixed a bug that caused no event to be fired for a file created in an automatic (recursive) watch,
-16.8.2006  : Omry : fixed output file name for deleted event.
-30/7/2006  : Omry : Added NO_SUCH_FILE_OR_DIRECTORY constant to JNotifyException.
+16.8.2006  : Omry : fixed a bug that caused no event to be fired for a file created in an automatic (recursive) watch (Thanks Kristof Nidzwetzki for bug report),
+16.8.2006  : Omry : fixed output file name for deleted event (Thanks Kristof Nidzwetzki for bug report).
+30/7/2006  : Omry : Added NO_SUCH_FILE_OR_DIRECTORY constant to JNotifyException (Thanks Marcelo Fernández for feature request).
 24/6/2006  : Omry : fixed recursive listening on linux (NPE was thrown in certain cases).
 15/12/2005 : Omry : No longer outputs absolute root path in events.
 15/12/2005 : Omry : API Cleanup : got rid of the get() method in JNotify. moved constants from IJnotify to JNotify

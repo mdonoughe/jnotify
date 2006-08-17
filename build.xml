@@ -15,7 +15,7 @@
     <!-- ================================= 
           target: all              
          ================================= -->
-    <target name="all" depends="clean,build" description="--> Builds jnotify library">
+    <target name="all" depends="setup,clean,build" description="--> Builds jnotify library">
     </target>
 	
     <!-- - - - - - - - - - - - - - - - - - 
