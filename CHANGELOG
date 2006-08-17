@@ -1,6 +1,7 @@
 ------------------------------------
 Changes in Jnotify (java)
 ------------------------------------
+17.8.2006  : Omry : jnotify-0.9 released
 16.8.2006  : Omry : fixed a bug that caused no event to be fired for a file created in an automatic (recursive) watch (Thanks Kristof Nidzwetzki for bug report),
 16.8.2006  : Omry : fixed output file name for deleted event (Thanks Kristof Nidzwetzki for bug report).
 30/7/2006  : Omry : Added NO_SUCH_FILE_OR_DIRECTORY constant to JNotifyException (Thanks Marcelo Fernández for feature request).
