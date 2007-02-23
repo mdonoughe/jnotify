@@ -78,7 +78,7 @@ public class JNotify_linux
 													 */
 	public final static int IN_ONESHOT = 0x80000000; /* only send event once */
 
-	/*d
+	/*
 	 * All of the events - we build the list by hand so that we can add flags in
 	 * the future and not break backward compatibility. Apps will get only the
 	 * events that they originally wanted. Be sure to add new events here!

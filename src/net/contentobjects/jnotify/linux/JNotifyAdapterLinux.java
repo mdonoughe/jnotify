@@ -416,7 +416,16 @@ public class JNotifyAdapterLinux implements IJNotify
 		boolean _watchSubtree;
 		JNotifyListener _listener;
 		public String renameOldName;
-		Hashtable _cookieToOldName = new Hashtable();
+        /*
+         * if the cookie hashtable is static every WatchData can access the
+         * cookies from other WatchData (directories). The static key word wont
+         * be a problem because:
+         *      i)   a cookie is deleted right after its retrival
+         *      ii)  cookies are only used with rename actions
+         * 
+         * BUG: discovered by Fabio Bernasconi
+         */
+        static Hashtable _cookieToOldName = new Hashtable();
 		String _path;
 		WatchData _parentWatchData;
 
