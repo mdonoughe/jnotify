@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 import net.contentobjects.jnotify.JNotify;
+import net.contentobjects.jnotify.JNotifyAdapter;
+import net.contentobjects.jnotify.JNotifyException;
 import net.contentobjects.jnotify.JNotifyListener;
 
 public class UnitTest extends TestCase
@@ -20,133 +22,133 @@ public class UnitTest extends TestCase
 	}
 	
 	
-//	public void testFlat1() throws Exception
-//	{
-//		ArrayList commands = new ArrayList();
-//		ArrayList events = new ArrayList();
-//
-//		// create a dir
-//		commands.add(Command.createDir("test"));
-//
-//		// and a file in that dir
-//		// since we don't listen recuresvily, we should only get one event for
-//		// this.
-//		commands.add(Command.createFile("test/2"));
-//		commands.add(Command.createFile("test/3"));
-//
-//		events.add(Event.created("test"));
-//
-//		performTest(JNotify.FILE_ANY, false, commands, events);
-//	}
-//
-//	public void testDelete() throws Exception
-//	{
-//		ArrayList commands = new ArrayList();
-//		ArrayList events = new ArrayList();
-//
-//		// create a dir
-//		commands.add(Command.createDir("test"));
-//		events.add(Event.created("test"));
-//
-//		commands.add(Command.delete("test"));
-//		events.add(Event.deleted("test"));
-//
-//		performTest(JNotify.FILE_ANY, false, commands, events);
-//	}
-//
-//	public void testFlat2() throws Exception
-//	{
-//		ArrayList commands = new ArrayList();
-//		ArrayList events = new ArrayList();
-//
-//		// create a dir
-//		commands.add(Command.createDir("test"));
-//		// and a file in that dir
-//		commands.add(Command.createFile("test/2"));
-//		// since we don't listen recuresvily, we should only get one event for
-//		// this.
-//		events.add(Event.created("test"));
-//		// delete the inner file. this should generate no event
-//		commands.add(Command.delete("test/2"));
-//		// delete the dir
-//		commands.add(Command.delete("test"));
-//		// this should generate an event.
-//		events.add(Event.deleted("test"));
-//		// create another file
-//		commands.add(Command.createFile("1"));
-//		events.add(Event.created("1"));
-//		// modify it.
-//		commands.add(Command.modify("1"));
-//		events.add(Event.modified("1"));
-//		// rename it
-//		commands.add(Command.rename("1", "2"));
-//		events.add(Event.renamed("1", "2"));
-//		
-//		// rename again, to make sure file is still watched.
-//		commands.add(Command.rename("2", "3"));
-//		events.add(Event.renamed("2", "3"));
-//
-//		
-//		performTest(JNotify.FILE_ANY, false, commands, events);
-//	}
-//
-//	public void testRecursive() throws Exception
-//	{
-//		ArrayList commands = new ArrayList();
-//		ArrayList events = new ArrayList();
-//
-//
-//		commands.add(Command.createDir("a"));
-//		events.add(Event.created("a"));
-//
-//		commands.add(Command.createDir("a/b"));
-//		events.add(Event.created("a/b"));
-//
-//		commands.add(Command.createDir("a/c"));
-//		events.add(Event.created("a/c"));
-//
-//		commands.add(Command.createSleep(300));
-//
-//		commands.add(Command.createDir("a/c/d"));
-//		events.add(Event.created("a/c/d"));
-//
-//		performTest(JNotify.FILE_ANY, true, commands, events);
-//	}
-//	
-//    public void testRecursive2() throws Exception
-//    {
-//        final ArrayList commands = new ArrayList();
-//        final ArrayList events = new ArrayList();
-//
-//        commands.add(Command.createDir("1"));
-//        events.add(Event.created("1"));
-//        commands.add(Command.createFile("1/2"));
-//        events.add(Event.created("1/2"));
-//        
-//        performTest(JNotify.FILE_ANY, true, commands, events);
-//    }
-//
-//    public void testRecursive3() throws Exception
-//    {
-//        final ArrayList commands = new ArrayList();
-//        final ArrayList events = new ArrayList();
-//
-//        commands.add(Command.createDir("1"));
-//        events.add(Event.created("1"));
-//
-//        commands.add(Command.createFile("1/2"));
-//        events.add(Event.created("1/2"));
-//
-//        commands.add(Command.createSleep(300));
-//        
-//        commands.add(Command.delete("1/2"));
-//        events.add(Event.deleted("1/2"));
-//        
-//        commands.add(Command.delete("1"));
-//        events.add(Event.deleted("1"));
-//
-//        performTest(JNotify.FILE_ANY, true, commands, events);
-//    }	
+	public void testFlat1() throws Exception
+	{
+		ArrayList commands = new ArrayList();
+		ArrayList events = new ArrayList();
+
+		// create a dir
+		commands.add(Command.createDir("test"));
+
+		// and a file in that dir
+		// since we don't listen recuresvily, we should only get one event for
+		// this.
+		commands.add(Command.createFile("test/2"));
+		commands.add(Command.createFile("test/3"));
+
+		events.add(Event.created("test"));
+
+		performTest(JNotify.FILE_ANY, false, commands, events);
+	}
+
+	public void testDelete() throws Exception
+	{
+		ArrayList commands = new ArrayList();
+		ArrayList events = new ArrayList();
+
+		// create a dir
+		commands.add(Command.createDir("test"));
+		events.add(Event.created("test"));
+
+		commands.add(Command.delete("test"));
+		events.add(Event.deleted("test"));
+
+		performTest(JNotify.FILE_ANY, false, commands, events);
+	}
+
+	public void testFlat2() throws Exception
+	{
+		ArrayList commands = new ArrayList();
+		ArrayList events = new ArrayList();
+
+		// create a dir
+		commands.add(Command.createDir("test"));
+		// and a file in that dir
+		commands.add(Command.createFile("test/2"));
+		// since we don't listen recuresvily, we should only get one event for
+		// this.
+		events.add(Event.created("test"));
+		// delete the inner file. this should generate no event
+		commands.add(Command.delete("test/2"));
+		// delete the dir
+		commands.add(Command.delete("test"));
+		// this should generate an event.
+		events.add(Event.deleted("test"));
+		// create another file
+		commands.add(Command.createFile("1"));
+		events.add(Event.created("1"));
+		// modify it.
+		commands.add(Command.modify("1"));
+		events.add(Event.modified("1"));
+		// rename it
+		commands.add(Command.rename("1", "2"));
+		events.add(Event.renamed("1", "2"));
+		
+		// rename again, to make sure file is still watched.
+		commands.add(Command.rename("2", "3"));
+		events.add(Event.renamed("2", "3"));
+
+		
+		performTest(JNotify.FILE_ANY, false, commands, events);
+	}
+
+	public void testRecursive() throws Exception
+	{
+		ArrayList commands = new ArrayList();
+		ArrayList events = new ArrayList();
+
+
+		commands.add(Command.createDir("a"));
+		events.add(Event.created("a"));
+
+		commands.add(Command.createDir("a/b"));
+		events.add(Event.created("a/b"));
+
+		commands.add(Command.createDir("a/c"));
+		events.add(Event.created("a/c"));
+
+		commands.add(Command.createSleep(300));
+
+		commands.add(Command.createDir("a/c/d"));
+		events.add(Event.created("a/c/d"));
+
+		performTest(JNotify.FILE_ANY, true, commands, events);
+	}
+	
+    public void testRecursive2() throws Exception
+    {
+        final ArrayList commands = new ArrayList();
+        final ArrayList events = new ArrayList();
+
+        commands.add(Command.createDir("1"));
+        events.add(Event.created("1"));
+        commands.add(Command.createFile("1/2"));
+        events.add(Event.created("1/2"));
+        
+        performTest(JNotify.FILE_ANY, true, commands, events);
+    }
+
+    public void testRecursive3() throws Exception
+    {
+        final ArrayList commands = new ArrayList();
+        final ArrayList events = new ArrayList();
+
+        commands.add(Command.createDir("1"));
+        events.add(Event.created("1"));
+
+        commands.add(Command.createFile("1/2"));
+        events.add(Event.created("1/2"));
+
+        commands.add(Command.createSleep(300));
+        
+        commands.add(Command.delete("1/2"));
+        events.add(Event.deleted("1/2"));
+        
+        commands.add(Command.delete("1"));
+        events.add(Event.deleted("1"));
+
+        performTest(JNotify.FILE_ANY, true, commands, events);
+    }	
     
     
     public void testRecursive4() throws Exception
@@ -305,7 +307,6 @@ public class UnitTest extends TestCase
 		};
 	}
 
-	/*
 	public void testRemoveWatch1() throws JNotifyException
 	{
 		int wd = JNotify.addWatch(".", JNotify.FILE_ANY, false, new JNotifyAdapter());
@@ -334,7 +335,6 @@ public class UnitTest extends TestCase
 
 		performTest(JNotify.FILE_ANY, true, commands, events);
 	}
-	*/
 
 	private void assertMatch(Event expected, Event actual)
 	{
