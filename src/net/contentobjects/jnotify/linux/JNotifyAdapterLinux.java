@@ -177,8 +177,8 @@ public class JNotifyAdapterLinux implements IJNotify
 				}
 				catch (JNotifyException e)
 				{
-					System.err.println("registerToSubTree : warning, failed to register " + root + " :" + e.getMessage());
 					if (e.getErrorCode() == JNotifyException.ERROR_WATCH_LIMIT_REACHED)
+						JNotify_linux.warn("JNotifyAdapterLinux.registerToSubTree : warning, failed to register " + root + " :" + e.getMessage());
 					{
 						throw e;
 					}
