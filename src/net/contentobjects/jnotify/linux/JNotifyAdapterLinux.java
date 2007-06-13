@@ -315,10 +315,11 @@ public class JNotifyAdapterLinux implements IJNotify
 						}
 					}
 				}
-//				else
-//				if ((linuxMask & JNotify_linux.IN_DELETE_SELF) != 0)
-//				{
-//				}
+				else
+				if ((linuxMask & JNotify_linux.IN_DELETE_SELF) != 0)
+				{
+					watchData.notifyFileDeleted(name);
+				}
 				else
 				if ((linuxMask & JNotify_linux.IN_DELETE)  != 0)
 				{
@@ -396,7 +397,11 @@ public class JNotifyAdapterLinux implements IJNotify
 		String path;
 		if (wdata != null)
 		{
-			path = wdata._path + File.separator + name; 
+			path = wdata._path;
+			if (path != null && name != "")
+			{
+				path += File.separator + name; 
+			}
 		}
 		else
 		{
@@ -540,7 +545,11 @@ public class JNotifyAdapterLinux implements IJNotify
 			}
 			else // auto watch.
 			{
-				outName = _path.substring(getParentWatch()._path.length() + 1) + File.separatorChar + name;
+				outName = _path.substring(getParentWatch()._path.length() + 1);
+				if (name != "")
+				{
+					outName += File.separatorChar + name;
+				}
 			}
 			return outName;			
 		}
