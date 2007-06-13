@@ -51,7 +51,7 @@ public class TestJNotifyLinux
 		});
 		
 		
-		int wd = JNotify_linux.addWatch("/home/om1ry", JNotify_linux.IN_MODIFY);
+		int wd = JNotify_linux.addWatch("/home/omry/tmp", JNotify_linux.IN_ALL_EVENT);
 		System.err.println("wd : " + wd);
 		
 		try

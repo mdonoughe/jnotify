@@ -21,7 +21,7 @@ public class UnitTest extends TestCase
 		super(name);
 	}
 	
-	
+/*	
 	public void testFlat1() throws Exception
 	{
 		ArrayList commands = new ArrayList();
@@ -174,7 +174,7 @@ public class UnitTest extends TestCase
         performTest(JNotify.FILE_ANY, true, commands, events);
     }	
     
-
+*/
 	void performTest(int mask, boolean watchSubtree, ArrayList commands,
 		ArrayList expectedEvents) throws IOException
 	{
@@ -404,5 +404,4 @@ public class UnitTest extends TestCase
 		}
 		return sb.toString();
 	}
-
 }
