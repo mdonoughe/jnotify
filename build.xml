@@ -21,7 +21,7 @@
     <!-- - - - - - - - - - - - - - - - - - 
           target: clean                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="clean" depends="setup,clean_linux,clean_win32">
+    <target name="clean" depends="setup,clean_linux,clean_macosx,clean_win32">
     </target>
 	
 	
@@ -36,6 +36,16 @@
     </target>
 
 	
+    <!-- - - - - - - - - - - - - - - - - -
+          target: clean_macosx
+         - - - - - - - - - - - - - - - - - -->
+    <target name="clean_macosx">
+		<ant antfile="native_build.xml" target="clean">
+			<property name="platform" value="macosx"/>
+		</ant>
+    </target>
+
+
     <!-- - - - - - - - - - - - - - - - - - 
           target: clean_win32                      
          - - - - - - - - - - - - - - - - - -->
@@ -58,6 +68,18 @@
     </target>
 	
 	
+    <!-- - - - - - - - - - - - - - - - - -
+          target: build_native_macosx
+         - - - - - - - - - - - - - - - - - -->
+    <target name="build_native_macosx">
+    	<ant antfile="native_build.xml" target="build">
+    		<property name="platform" value="macosx"/>
+    		<property name="output" value="${BUILD_DIR}/output"/>
+    		<property name="version" value="${VERSION}"/>
+    	</ant>
+    </target>
+
+
     <!-- - - - - - - - - - - - - - - - - - 
           target: build_native_win32                      
          - - - - - - - - - - - - - - - - - -->
@@ -141,6 +163,7 @@
     <target name="build" depends="setup">
     	<antcall target="build_java"></antcall>
     	<antcall target="build_native_linux"></antcall>
+    	<antcall target="build_native_macosx"></antcall>
     	<antcall target="build_native_win32"></antcall>
     	<antcall target="pack"></antcall>
     </target>

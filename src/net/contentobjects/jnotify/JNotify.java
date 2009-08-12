@@ -70,6 +70,18 @@ public class JNotify
 			}
 		}
 		else
+		if (osName.startsWith("mac os x"))
+		{
+			try
+			{
+				_instance = (IJNotify) Class.forName("net.contentobjects.jnotify.macosx.JNotifyAdapterMacOSX").newInstance();
+			}
+			catch (Exception e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
+                else
 		{
 			throw new RuntimeException("Unsupported OS : " + osName);
 		}
