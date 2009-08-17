@@ -31,11 +31,11 @@ public class JNotify_macosx
 		nativeRemoveWatch(wd);
 	}
 
-	public static void callbackProcessEvent(int wd, String rootPath, String filePath)
+	public static void callbackProcessEvent(int wd, String rootPath, String filePath, boolean recurse)
 	{
 		if (_eventListener != null)
 		{
-			_eventListener.notifyChange(wd, rootPath, filePath);
+			_eventListener.notifyChange(wd, rootPath, filePath, recurse);
 		}
 	}
 

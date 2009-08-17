@@ -14,9 +14,9 @@ public class JNotifyAdapterMacOSX implements IJNotify
 	{
 		JNotify_macosx.setNotifyListener(new FSEventListener()
 		{
-			public void notifyChange(int wd, String rootPath, String filePath)
+			public void notifyChange(int wd, String rootPath, String filePath, boolean recurse)
 			{
-				notifyChangeEvent(wd, rootPath, filePath);
+				notifyChangeEvent(wd, rootPath, filePath, recurse);
 			}
 		});
 		_id2Data = new Hashtable();
@@ -63,7 +63,7 @@ public class JNotifyAdapterMacOSX implements IJNotify
 		}
 	}
 
-	void notifyChangeEvent(int wd, String rootPath, String filePath)
+	void notifyChangeEvent(int wd, String rootPath, String filePath, boolean recurse)
 	{
 		synchronized (_id2Data)
 		{
