@@ -4,31 +4,93 @@ import net.contentobjects.jnotify.JNotifyException;
 
 public class JNotify_macosx
 {
+	private static Object initCondition = new Object();
+	private static Object countLock = new Object();
+	private static int watches = 0;
+
 	static
 	{
 		System.loadLibrary("jnotify");
-		int res = nativeInit();
-		if (res != 0)
+		Thread thread = new Thread("FSEvent thread")
 		{
-			throw new RuntimeException("Error initializing native library. (#" + res + ")");
-		}
+			public void run()
+			{
+				nativeInit();
+				synchronized (initCondition)
+				{
+					initCondition.notifyAll();
+					initCondition = null;
+				}
+				while (true)
+				{
+					synchronized (countLock)
+					{
+						while (watches == 0)
+						{
+							try
+							{
+								countLock.wait();
+							}
+							catch (InterruptedException e)
+							{
+							}
+						}
+					}
+					nativeNotifyLoop();
+				}
+			}
+		};
+		thread.setDaemon(true);
+		thread.start();
 	}
 
-	private static native int nativeInit();
-	private static native int nativeAddWatch(String path, boolean watchSubtree) throws JNotifyException;
+	private static native void nativeInit();
+	private static native int nativeAddWatch(String path) throws JNotifyException;
 	private static native String getErrorDesc(long errorCode);
-	private static native void nativeRemoveWatch(int wd);
+	private static native boolean nativeRemoveWatch(int wd);
+	private static native void nativeNotifyLoop();
 
 	private static FSEventListener _eventListener;
 
-	public static int addWatch(String path, boolean watchSubtree) throws JNotifyException
+	public static int addWatch(String path) throws JNotifyException
 	{
-		return nativeAddWatch(path, watchSubtree);
+		Object myCondition = initCondition;
+		if (myCondition != null)
+		{
+			synchronized (myCondition)
+			{
+				while (initCondition != null)
+				{
+					try
+					{
+						initCondition.wait();
+					}
+					catch (InterruptedException e)
+					{
+					}
+				}
+			}
+		}
+		int wd = nativeAddWatch(path);
+		synchronized (countLock)
+		{
+			watches++;
+			countLock.notifyAll();
+		}
+		return wd;
 	}
 
-	public static void removeWatch(int wd)
+	public static boolean removeWatch(int wd)
 	{
-		nativeRemoveWatch(wd);
+		boolean removed = nativeRemoveWatch(wd);
+		if (removed)
+		{
+			synchronized (countLock)
+			{
+				watches--;
+			}
+		}
+		return removed;
 	}
 
 	public static void callbackProcessEvent(int wd, String rootPath, String filePath, boolean recurse)

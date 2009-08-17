@@ -25,7 +25,7 @@ public class JNotifyAdapterMacOSX implements IJNotify
 	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener)
 		throws JNotifyException
 	{
-		int wd = JNotify_macosx.addWatch(path, watchSubtree);
+		int wd = JNotify_macosx.addWatch(path);
 		_id2Data.put(Integer.valueOf(wd), new WatchData(wd, mask, listener));
 		return wd;
 	}
