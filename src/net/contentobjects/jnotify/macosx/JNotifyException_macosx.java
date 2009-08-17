@@ -5,14 +5,14 @@ import net.contentobjects.jnotify.JNotifyException;
 public class JNotifyException_macosx extends JNotifyException
 {
 
-	public JNotifyException_macosx(String s, int systemErrorCode)
+	public JNotifyException_macosx(String s)
 	{
-		super(s, systemErrorCode);
+		super(s, 1);
 	}
 
 	public int getErrorCode()
 	{
-		return _systemErrorCode;
+		return 1;
 	}
 
 }
