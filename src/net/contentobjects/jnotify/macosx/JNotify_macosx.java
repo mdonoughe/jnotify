@@ -46,7 +46,6 @@ public class JNotify_macosx
 
 	private static native void nativeInit();
 	private static native int nativeAddWatch(String path) throws JNotifyException;
-	private static native String getErrorDesc(long errorCode);
 	private static native boolean nativeRemoveWatch(int wd);
 	private static native void nativeNotifyLoop();
 
