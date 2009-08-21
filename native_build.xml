@@ -20,15 +20,15 @@
     	<fail unless="platform"/>
     	
 		<antcall target="p.build">
-			<param name="dir" value="../jnotify_${platform}/Release" />
+			<param name="dir" value="${platform}/Release" />
 		</antcall>    
     	
     	<zip destfile="${output}/jnotify-native-${platform}-${version}-src.zip">
-    		<fileset dir="../jnotify_${platform}" excludes="${src.excludes}" includes="${src.includes}" />
+    		<fileset dir="${platform}" excludes="${src.excludes}" includes="${src.includes}" />
     	</zip>
     	
     	 <concat destfile="${output}/CHANGELOG" append="true" fixlastline="true">
-    	    <filelist dir="../jnotify_${platform}" files="CHANGELOG"/>
+    	    <filelist dir="${platform}" files="CHANGELOG"/>
     	  </concat>
     </target>
 
@@ -53,11 +53,11 @@
          ================================= -->
     <target name="clean"  depends="setup" description="--> clean">
 		<antcall target="p.clean">
-			<param name="dir" value="../jnotify_${platform}/Debug" />
+			<param name="dir" value="${platform}/Debug" />
 		</antcall>        
     	
 		<antcall target="p.clean">
-			<param name="dir" value="../jnotify_${platform}/Release" />
+			<param name="dir" value="${platform}/Release" />
 		</antcall>    
     	
     	<delete dir="${output}"/>
@@ -78,7 +78,7 @@
           target: setup                      
          - - - - - - - - - - - - - - - - - -->
     <target name="setup">
-    	<loadproperties srcfile="../jnotify_${platform}/build.properties" />
+    	<loadproperties srcfile="${platform}/build.properties" />
     </target>
 
 
