@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     Dec 14, 2005 11:48:16 AM                                                        
+
+     jnotify_linux    
+     Linux native code for JNotify
+                   
+     omry                                                                
+     ====================================================================== -->
+<project name="jnotify_linux" default="build">
+	<description>
+	    	Linux native code for JNotify
+    </description>
+	
+	
+    <!-- ================================= 
+          target: build              
+         ================================= -->
+    <target name="build" depends="setup" description="--> builds jnotify linux">
+    	
+		<antcall target="p.build">
+			<param name="dir" value="Release" />
+		</antcall>    
+    	
+    	<zip destfile="${output}/jnotify_linux-src.zip">
+    		<fileset dir="." excludes="${bin.excludes}" includes="${bin.includes}" />
+    	</zip>
+    </target>
+
+
+	
+    <!-- ================================= 
+          target: p.build              
+         ================================= -->
+    <target name="p.build" depends="setup">
+    	<mkdir dir="${output}"/>
+        <exec executable="make" dir="${dir}"></exec>
+    	<copy file="${dir}/libjnotify.so" todir="${output}"></copy>
+    </target>
+	
+	
+    <!-- ================================= 
+          target: clean              
+         ================================= -->
+    <target name="clean"  depends="setup" description="--> clean">
+		<antcall target="p.clean">
+			<param name="dir" value="Debug" />
+		</antcall>        
+    	
+		<antcall target="p.clean">
+			<param name="dir" value="Release" />
+		</antcall>    
+    	
+    	<delete dir="${output}"/>
+    </target>
+
+
+	
+    <target name="p.clean" depends="setup">
+        <exec executable="make" dir="${dir}"> 
+        	<arg line="clean"/>
+        </exec>
+    	<delete dir="${output}/${dir}" />
+    </target>
+	
+	
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: setup                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="setup">
+    	<property name="output" value="build/output"/>
+    	<loadproperties srcfile="build.properties" />
+    </target>
+
+
+
+</project>
+

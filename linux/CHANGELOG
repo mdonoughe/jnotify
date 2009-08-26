@@ -1,0 +1,5 @@
+
+------------------------------------
+Changes in jnotify linux native code
+------------------------------------
+15/12/2005 : Omry : Fixed bugs with the Linux impl.

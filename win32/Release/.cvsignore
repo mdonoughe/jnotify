@@ -1,0 +1,6 @@
+jnotify.dll
+Lock.d
+Logger.d
+net_contentobjects_jnotify_win32_JNotify_win32.d
+WatchData.d
+Win32FSHook.d
