@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!-- ======================================================================
+     Dec 14, 2005 11:48:16 AM
+
+     jnotify_macosx
+     Mac OS X native code for JNotify
+
+     modified from omry's win32 version
+     ====================================================================== -->
+<project name="jnotify_macosx" default="build">
+	<description>
+	    	Mac OS X native code for JNotify
+    </description>
+
+
+    <!-- =================================
+          target: build
+         ================================= -->
+    <target name="build" depends="setup" description="--> builds jnotify macosx">
+
+    	<mkdir dir="${output}/src"/>
+
+		<antcall target="p.build">
+			<param name="dir" value="Release" />
+		</antcall>
+
+    	<zip destfile="${output}/src/jnotify_macosx-src.zip">
+    		<fileset dir="." excludes="${bin.excludes}" includes="${bin.includes}" />
+    	</zip>
+    </target>
+
+
+
+    <!-- =================================
+          target: p.build
+         ================================= -->
+    <target name="p.build" depends="setup">
+    	<mkdir dir="${output}/bin/"/>
+        <exec executable="make" dir="${dir}"></exec>
+    	<copy file="${dir}/libjnotify.dylib" todir="${output}/bin/"></copy>
+    </target>
+
+
+    <!-- =================================
+          target: clean
+         ================================= -->
+    <target name="clean"  depends="setup" description="--> clean">
+		<antcall target="p.clean">
+			<param name="dir" value="Debug" />
+		</antcall>
+
+		<antcall target="p.clean">
+			<param name="dir" value="Release" />
+		</antcall>
+
+    	<delete dir="${output}"/>
+    </target>
+
+
+
+    <target name="p.clean" depends="setup">
+        <exec executable="make" dir="${dir}">
+        	<arg line="clean"/>
+        </exec>
+    	<delete dir="${output}/${dir}" />
+    </target>
+
+
+    <!-- - - - - - - - - - - - - - - - - -
+          target: setup
+         - - - - - - - - - - - - - - - - - -->
+    <target name="setup">
+    	<property name="output" value="build"/>
+    	<loadproperties srcfile="build.properties" />
+    </target>
+
+
+
+</project>
+
