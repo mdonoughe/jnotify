@@ -1,4 +1,7 @@
 bin/
 build/
-Debug/
-Release/
+*.d
+*.so
+*.dylib
+*.dll
+*.o
