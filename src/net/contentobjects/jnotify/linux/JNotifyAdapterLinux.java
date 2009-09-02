@@ -20,11 +20,11 @@
  ******************************************************************************
  *
  * Content Objects, Inc., hereby disclaims all copyright interest in the
- * library `JNotify' (a Java library for file system events). 
+ * library `JNotify' (a Java library for file system events).
  * 
  * Yahali Sherman, 21 November 2005
  *    Content Objects, VP R&D.
- *    
+ * 
  ******************************************************************************
  * Author : Omry Yadan
  ******************************************************************************/
@@ -111,7 +111,7 @@ public class JNotifyAdapterLinux implements IJNotify
 		// these events should not reach the client code.
 		if (watchSubtree)
 		{
-			linuxMask |= JNotify_linux.IN_CREATE;	
+			linuxMask |= JNotify_linux.IN_CREATE;
 		}
 
 		WatchData watchData = createWatch(null, true, new File(path), mask, linuxMask, watchSubtree, listener);
@@ -157,7 +157,7 @@ public class JNotifyAdapterLinux implements IJNotify
 		}
 
 		// make sure user really requested to be notified on this event.
-		// (in case of recursive listening, this IN_CREATE flag is always on, even if 
+		// (in case of recursive listening, this IN_CREATE flag is always on, even if
 		// the user is not interester in creation events).
 		if (fireCreatedEvents && (parentWatch._mask & JNotify.FILE_CREATED) != 0)
 		{
@@ -272,7 +272,7 @@ public class JNotifyAdapterLinux implements IJNotify
 			Integer iwd = (Integer) _linuxWd2Wd.get(new Integer(linuxWd));
 			if (iwd == null)
 			{
-				// This happens if an exception is thrown because used too many watches. 
+				// This happens if an exception is thrown because used too many watches.
 				System.out.println("JNotifyAdapterLinux: warning, recieved event for an unregisted LinuxWD "+ linuxWd +" ignoring...");
 				return;
 			}
@@ -286,7 +286,7 @@ public class JNotifyAdapterLinux implements IJNotify
 					if (watchData._watchSubtree)
 					{
 						try
-						{				
+						{
 							createWatch(watchData.getParentWatch(), false, newRootFile, watchData._mask, watchData._linuxMask, watchData._watchSubtree, watchData._listener);
 							// fire events for newly found directories under the new root.
 							WatchData parent = watchData.getParentWatch();
@@ -299,7 +299,7 @@ public class JNotifyAdapterLinux implements IJNotify
 					}
 					
 					// make sure user really requested to be notified on this event.
-					// (in case of recursive listening, this IN_CREATE flag is always on, even if 
+					// (in case of recursive listening, this IN_CREATE flag is always on, even if
 					// the user is not interester in creation events).
 					if ((watchData._mask & JNotify.FILE_CREATED) != 0)
 					{
@@ -350,7 +350,7 @@ public class JNotifyAdapterLinux implements IJNotify
 						_autoWatchesPaths.remove(watchData._path);
 						watchData.removeFromParent();
 					}
-				}				
+				}
 			}
 			else
 			{
@@ -400,7 +400,7 @@ public class JNotifyAdapterLinux implements IJNotify
 			path = wdata._path;
 			if (path != null && name != "")
 			{
-				path += File.separator + name; 
+				path += File.separator + name;
 			}
 		}
 		else
@@ -416,11 +416,10 @@ public class JNotifyAdapterLinux implements IJNotify
 		int _wd;
 		private int _linuxWd;
 		private ArrayList _subWd;
-		int _mask; 
+		int _mask;
 		int _linuxMask;
 		boolean _watchSubtree;
 		JNotifyListener _listener;
-		public String renameOldName;
         /*
          * if the cookie hashtable is static every WatchData can access the
          * cookies from other WatchData (directories). The static key word wont
@@ -551,7 +550,7 @@ public class JNotifyAdapterLinux implements IJNotify
 					outName += File.separatorChar + name;
 				}
 			}
-			return outName;			
+			return outName;
 		}
 		
 		public int getParentWatchID()
