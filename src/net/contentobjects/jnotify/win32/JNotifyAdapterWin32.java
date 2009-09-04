@@ -42,7 +42,7 @@ import net.contentobjects.jnotify.Util;
 
 public class JNotifyAdapterWin32 implements IJNotify
 {
-	private Hashtable _id2Data;
+	private Hashtable<Integer, WatchData> _id2Data;
 
 	public JNotifyAdapterWin32()
 	{
@@ -53,7 +53,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 				notifyChangeEvent(wd, action, rootPath, filePath);
 			}
 		});
-		_id2Data = new Hashtable();
+		_id2Data = new Hashtable<Integer, WatchData>();
 	}
 
 	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener)
@@ -114,7 +114,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 	{
 		synchronized (_id2Data)
 		{
-			WatchData watchData = (WatchData) _id2Data.get(new Integer(wd));
+			WatchData watchData = _id2Data.get(new Integer(wd));
 			if (watchData != null)
 			{
 				int mask = watchData._mask;

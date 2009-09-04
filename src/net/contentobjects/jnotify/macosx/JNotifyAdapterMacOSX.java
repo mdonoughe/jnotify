@@ -8,7 +8,7 @@ import net.contentobjects.jnotify.JNotifyListener;
 
 public class JNotifyAdapterMacOSX implements IJNotify
 {
-	private Hashtable _id2Data;
+	private Hashtable<Integer, WatchData> _id2Data;
 
 	public JNotifyAdapterMacOSX()
 	{
@@ -19,7 +19,7 @@ public class JNotifyAdapterMacOSX implements IJNotify
 				notifyChangeEvent(wd, rootPath, filePath, recurse);
 			}
 		});
-		_id2Data = new Hashtable();
+		_id2Data = new Hashtable<Integer, WatchData>();
 	}
 
 	public int addWatch(String path, int mask, boolean watchSubtree, JNotifyListener listener)
@@ -67,7 +67,7 @@ public class JNotifyAdapterMacOSX implements IJNotify
 	{
 		synchronized (_id2Data)
 		{
-			WatchData watchData = (WatchData) _id2Data.get(Integer.valueOf(wd));
+			WatchData watchData = _id2Data.get(Integer.valueOf(wd));
 			if (watchData != null)
 			{
 				int mask = watchData._mask;

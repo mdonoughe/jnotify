@@ -21,7 +21,7 @@ public class UnitTest extends TestCase
 		super(name);
 	}
 	
-/*	
+/*
 	public void testFlat1() throws Exception
 	{
 		ArrayList commands = new ArrayList();
@@ -148,7 +148,7 @@ public class UnitTest extends TestCase
         events.add(Event.deleted("1"));
 
         performTest(JNotify.FILE_ANY, true, commands, events);
-    }	
+    }
     
     
     public void testRecursive4() throws Exception
@@ -172,11 +172,11 @@ public class UnitTest extends TestCase
         
 
         performTest(JNotify.FILE_ANY, true, commands, events);
-    }	
+    }
     
 */
-	void performTest(int mask, boolean watchSubtree, ArrayList commands,
-		ArrayList expectedEvents) throws IOException
+	void performTest(int mask, boolean watchSubtree, ArrayList<Command> commands,
+		ArrayList<Event> expectedEvents) throws IOException
 	{
 		System.out.println("JUnit : -------------- performTest -------------- :");
 		String rootDir = "$$$_TEST_$$$/";
@@ -188,7 +188,7 @@ public class UnitTest extends TestCase
 		int wd2 = -1;
 		try
 		{
-			final ArrayList actualEvents = new ArrayList();
+			final ArrayList<Event> actualEvents = new ArrayList<Event>();
 			
 			wd2 = JNotify.addWatch(testRoot.getName(), mask, watchSubtree, createListener(actualEvents));
 
@@ -197,7 +197,7 @@ public class UnitTest extends TestCase
 			System.out.println("JUnit : Executing commands...");
 			for (int i = 0; i < commands.size(); i++)
 			{
-				Command command = (Command) commands.get(i);
+				Command command = commands.get(i);
 				try
 				{
 					System.out.println("JUnit : Action " + command);
@@ -221,8 +221,8 @@ public class UnitTest extends TestCase
 			int expectedIndex = 0, actualIndex = 0;
 			for (; expectedIndex < expectedEvents.size();)
 			{
-				Event expected = (Event) expectedEvents.get(expectedIndex);
-				Event actual = (Event) actualEvents.get(actualIndex);
+				Event expected = expectedEvents.get(expectedIndex);
+				Event actual = actualEvents.get(actualIndex);
 
 				// On windows, the sysetm sends both modified and deleted
 				// in response to file deletion or file rename.
@@ -271,7 +271,7 @@ public class UnitTest extends TestCase
 		}
 	}
 
-	private JNotifyListener createListener(final ArrayList actualEvents)
+	private JNotifyListener createListener(final ArrayList<Event> actualEvents)
 	{
 		return new JNotifyListener()
 		{
@@ -316,8 +316,8 @@ public class UnitTest extends TestCase
 
 	public void testRemoveWatch2() throws IOException
 	{
-		ArrayList commands = new ArrayList();
-		ArrayList events = new ArrayList();
+		ArrayList<Command> commands = new ArrayList<Command>();
+		ArrayList<Event> events = new ArrayList<Event>();
 
 		commands.add(Command.createDir("a"));
 		events.add(Event.created("a"));
@@ -341,7 +341,7 @@ public class UnitTest extends TestCase
 		try
 		{
 			assertEquals(expected.getAction(), actual.getAction());
-		} 
+		}
 		catch (Error e)
 		{
 			System.out.println("Compare action failed:");
@@ -353,7 +353,7 @@ public class UnitTest extends TestCase
 		try
 		{
 			assertEquals(normalizePath(expected.getName()), normalizePath(actual.getName()));
-		} 
+		}
 		catch (Error e)
 		{
 			System.out.println("Compare name failed:");
@@ -365,7 +365,7 @@ public class UnitTest extends TestCase
 		try
 		{
 			assertEquals(normalizePath(expected.getName2()), normalizePath(actual.getName2()));
-		} 
+		}
 		catch (Error e)
 		{
 			System.out.println("Compare name2:");
