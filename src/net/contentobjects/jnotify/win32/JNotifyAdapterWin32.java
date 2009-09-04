@@ -68,7 +68,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 				| JNotify_win32.FILE_NOTIFY_CHANGE_ATTRIBUTES
 				| JNotify_win32.FILE_NOTIFY_CHANGE_DIR_NAME
 				| JNotify_win32.FILE_NOTIFY_CHANGE_FILE_NAME, watchSubtree);
-		_id2Data.put(new Integer(wd), new WatchData(wd, mask, listener));
+		_id2Data.put(Integer.valueOf(wd), new WatchData(wd, mask, listener));
 		return wd;
 	}
 
@@ -76,10 +76,10 @@ public class JNotifyAdapterWin32 implements IJNotify
 	{
 		synchronized (_id2Data)
 		{
-			if (_id2Data.containsKey(new Integer(wd)))
+			if (_id2Data.containsKey(Integer.valueOf(wd)))
 			{
 				System.out.println("JNotifyAdapterWin32: removeWatch(" + wd + ")");
-				_id2Data.remove(new Integer(wd));
+				_id2Data.remove(Integer.valueOf(wd));
 				JNotify_win32.removeWatch(wd);
 				return true;
 			}
@@ -114,7 +114,7 @@ public class JNotifyAdapterWin32 implements IJNotify
 	{
 		synchronized (_id2Data)
 		{
-			WatchData watchData = _id2Data.get(new Integer(wd));
+			WatchData watchData = _id2Data.get(Integer.valueOf(wd));
 			if (watchData != null)
 			{
 				int mask = watchData._mask;

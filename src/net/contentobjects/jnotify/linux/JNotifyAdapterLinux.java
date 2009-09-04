@@ -139,8 +139,8 @@ public class JNotifyAdapterLinux implements IJNotify
 		int wd = _watchIDCounter++;
 		int linuxWd = JNotify_linux.addWatch(absPath, linuxMask);
 		WatchData watchData = new WatchData(parentWatchData, user, absPath, wd, linuxWd, mask, linuxMask, watchSubtree, listener);
-		_linuxWd2Wd.put(new Integer(linuxWd), new Integer(wd));
-		_id2Data.put(new Integer(wd), watchData);
+		_linuxWd2Wd.put(Integer.valueOf(linuxWd), Integer.valueOf(wd));
+		_id2Data.put(Integer.valueOf(wd), watchData);
 		if (!user)
 		{
 			_autoWatchesPaths.put(absPath, absPath);
@@ -204,9 +204,9 @@ public class JNotifyAdapterLinux implements IJNotify
 		
 		synchronized (_id2Data)
 		{
-			if (_id2Data.containsKey(new Integer(wd)))
+			if (_id2Data.containsKey(Integer.valueOf(wd)))
 			{
-				WatchData watchData = _id2Data.get(new Integer(wd));
+				WatchData watchData = _id2Data.get(Integer.valueOf(wd));
 				unwatch(watchData);
 				return true;
 			}
@@ -269,7 +269,7 @@ public class JNotifyAdapterLinux implements IJNotify
 		
 		synchronized (_id2Data)
 		{
-			Integer iwd = _linuxWd2Wd.get(new Integer(linuxWd));
+			Integer iwd = _linuxWd2Wd.get(Integer.valueOf(linuxWd));
 			if (iwd == null)
 			{
 				// This happens if an exception is thrown because used too many watches.
@@ -343,8 +343,8 @@ public class JNotifyAdapterLinux implements IJNotify
 				else
 				if ((linuxMask & JNotify_linux.IN_IGNORED) != 0)
 				{
-					_linuxWd2Wd.remove(new Integer(watchData._linuxWd));
-					_id2Data.remove(new Integer(watchData._wd));
+					_linuxWd2Wd.remove(Integer.valueOf(watchData._linuxWd));
+					_id2Data.remove(Integer.valueOf(watchData._wd));
 					if (!watchData._user)
 					{
 						_autoWatchesPaths.remove(watchData._path);
@@ -392,8 +392,8 @@ public class JNotifyAdapterLinux implements IJNotify
 		if (IN_UNMOUNT) s += "IN_UNMOUNT, ";
 		if (IN_Q_OVERFLOW) s += "IN_Q_OVERFLOW, ";
 		if (IN_IGNORED) s += "IN_IGNORED, ";
-		int wd = _linuxWd2Wd.get(new Integer(linuxWd)).intValue();
-		WatchData wdata = _id2Data.get(new Integer(wd));
+		int wd = _linuxWd2Wd.get(Integer.valueOf(linuxWd)).intValue();
+		WatchData wdata = _id2Data.get(Integer.valueOf(wd));
 		String path;
 		if (wdata != null)
 		{
@@ -469,12 +469,12 @@ public class JNotifyAdapterLinux implements IJNotify
 
 		public void renaming(int cookie, String name)
 		{
-			_cookieToOldName.put(new Integer(cookie), getOutName(name));
+			_cookieToOldName.put(Integer.valueOf(cookie), getOutName(name));
 		}
 
 		public void notifyFileRenamed(String name, int cookie)
 		{
-			String oldName = _cookieToOldName.remove(new Integer(cookie));
+			String oldName = _cookieToOldName.remove(Integer.valueOf(cookie));
 			String outRoot = getOutRoot();
 			String outNewName = getOutName(name);
 			_listener.fileRenamed(getParentWatchID(), outRoot, oldName, outNewName);
@@ -504,7 +504,7 @@ public class JNotifyAdapterLinux implements IJNotify
 
 		void remveSubwatch(int linuxWd)
 		{
-			if (!_subWd.remove(new Integer(linuxWd)))
+			if (!_subWd.remove(Integer.valueOf(linuxWd)))
 			{
 				throw new RuntimeException("Error removing " + linuxWd + " from list");
 			}
@@ -512,7 +512,7 @@ public class JNotifyAdapterLinux implements IJNotify
 
 		void addSubwatch(int linuxWd)
 		{
-			_subWd.add(new Integer(linuxWd));
+			_subWd.add(Integer.valueOf(linuxWd));
 		}
 		
 		public String toString()
