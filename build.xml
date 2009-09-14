@@ -101,7 +101,7 @@
     	<mkdir dir="${BUILD_DIR}/dist"/>
     	
     	
-    	<javac source="1.3" target="1.3" srcdir="src" destdir="${BUILD_DIR}/bin" debug="${DEBUG}" debuglevel="${DEBUG_LEVEL}" />
+    	<javac source="1.5" target="1.5" srcdir="src" destdir="${BUILD_DIR}/bin" debug="${DEBUG}" debuglevel="${DEBUG_LEVEL}" />
     	
 		<jar destfile="${BUILD_DIR}/output/jnotify-${VERSION}.jar" basedir="${BUILD_DIR}/bin" update="true" duplicate="fail">
 			<manifest>
