@@ -400,7 +400,7 @@ public class AnotherUnitTest extends TestCase
     {
         try
         {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e)
         {
             fail(e.getMessage());
