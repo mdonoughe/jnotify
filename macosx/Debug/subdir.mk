@@ -1,13 +1,16 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-$(ROOT)/net_contentobjects_jnotify_macosx_JNotify_macosx.c 
+$(ROOT)/net_contentobjects_jnotify_macosx_JNotify_macosx.c \
+$(ROOT)/net_contentobjects_jnotify_macosx_JNotifyAdapterMacOSX_JNFile.c
 
 OBJS += \
-./net_contentobjects_jnotify_macosx_JNotify_macosx.o 
+./net_contentobjects_jnotify_macosx_JNotify_macosx.o \
+./net_contentobjects_jnotify_macosx_JNotifyAdapter_MacOSX_JNFile.o
 
 DEPS += \
 ${addprefix ./, \
 net_contentobjects_jnotify_macosx_JNotify_macosx.d \
+net_contentobjects_jnotify_macosx_JNotifyAdapter_MacOSX_JNFile.d \
 }
 
 

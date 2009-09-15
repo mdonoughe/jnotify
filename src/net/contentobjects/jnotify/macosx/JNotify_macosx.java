@@ -100,6 +100,18 @@ public class JNotify_macosx
 		}
 	}
 
+	public static void callbackInBatch(int wd, boolean state)
+	{
+		if (_eventListener != null)
+		{
+			if (state) {
+				_eventListener.batchStart(wd);
+			} else {
+				_eventListener.batchEnd(wd);
+			}
+		}
+	}
+
 	public static void setNotifyListener(FSEventListener eventListener)
 	{
 		if (_eventListener == null)

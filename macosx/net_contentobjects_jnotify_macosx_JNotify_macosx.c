@@ -1,5 +1,4 @@
 #include "net_contentobjects_jnotify_macosx_JNotify_macosx.h"
-#include <sys/stat.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
 
@@ -16,7 +15,8 @@ struct listnode
 static struct listnode *streams;
 static JNIEnv *loopEnv;
 static jclass loopClass;
-static jmethodID loopMethod;
+static jmethodID loopMethodProcessEvent;
+static jmethodID loopMethodInBatch;
 static CFRunLoopRef runLoop;
 
 static void fsevent_callback
@@ -28,19 +28,29 @@ static void fsevent_callback
   jstring jpath;
   jboolean recursive;
 
-  for (i = 0; i < numEvents; i++) {
+  // start batch
+  (*loopEnv)->CallVoidMethod(loopEnv, loopClass, loopMethodInBatch, node->id, JNI_TRUE);
+
+  for (i = 0; i < numEvents; i++)
+  {
+    // these flags mean we need a full rescan
     if (eventFlags[i] & (kFSEventStreamEventFlagUserDropped | kFSEventStreamEventFlagKernelDropped))
       jpath = node->root;
     else
       jpath = (*loopEnv)->NewStringUTF(loopEnv, cpaths[i]);
 
+    // these flags mean we need to scan recursively
     if (eventFlags[i] & (kFSEventStreamEventFlagUserDropped | kFSEventStreamEventFlagKernelDropped | kFSEventStreamEventFlagMustScanSubDirs))
       recursive = JNI_TRUE;
     else
       recursive = JNI_FALSE;
 
-    (*loopEnv)->CallVoidMethod(loopEnv, loopClass, loopMethod, node->id, node->root, jpath, recursive);
+    // notify
+    (*loopEnv)->CallVoidMethod(loopEnv, loopClass, loopMethodProcessEvent, node->id, node->root, jpath, recursive);
   }
+
+  // end batch
+  (*loopEnv)->CallVoidMethod(loopEnv, loopClass, loopMethodInBatch, node->id, JNI_FALSE);
 }
 
 JNIEXPORT void JNICALL Java_net_contentobjects_jnotify_macosx_JNotify_1macosx_nativeInit
@@ -50,8 +60,12 @@ JNIEXPORT void JNICALL Java_net_contentobjects_jnotify_macosx_JNotify_1macosx_na
   loopEnv = NULL;
   runLoop = CFRunLoopGetCurrent();
 
-  loopMethod = (*env)->GetStaticMethodID(env, clazz, "callbackProcessEvent", "(ILjava/lang/String;Ljava/lang/String;Z)V");
-  if (loopMethod == NULL)
+  loopMethodProcessEvent = (*env)->GetStaticMethodID(env, clazz, "callbackProcessEvent", "(ILjava/lang/String;Ljava/lang/String;Z)V");
+  if (loopMethodProcessEvent == NULL)
+    return;
+
+  loopMethodInBatch = (*env)->GetStaticMethodID(env, clazz, "callbackInBatch", "(IZ)V");
+  if (loopMethodInBatch == NULL)
     return;
 }
 
@@ -169,22 +183,3 @@ JNIEXPORT void JNICALL Java_net_contentobjects_jnotify_macosx_JNotify_1macosx_na
   CFRunLoopRun();
 }
 
-JNIEXPORT jlong JNICALL Java_net_contentobjects_jnotify_macosx_JNotify_1macosx_getINode
-  (JNIEnv *env, jclass clazz, jstring jpath)
-{
-  const char *path = (*env)->GetStringUTFChars(env, jpath, NULL);
-  if (path == NULL)
-    return 0;
-  struct stat64 stats;
-  if (lstat64(path, &stats))
-  {
-    if (errno == ENOENT)
-      (*env)->ThrowNew(env, (*env)->FindClass(env, "java/io/FileNotFoundException"), path);
-    else
-      (*env)->ThrowNew(env, (*env)->FindClass(env, "java/io/IOException"), path);
-    (*env)->ReleaseStringUTFChars(env, jpath, path);
-    return 0;
-  }
-  (*env)->ReleaseStringUTFChars(env, jpath, path);
-  return (jlong) stats.st_ino;
-}
