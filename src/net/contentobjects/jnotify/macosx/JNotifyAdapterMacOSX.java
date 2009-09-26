@@ -113,9 +113,19 @@ public class JNotifyAdapterMacOSX implements IJNotify
 	public int addWatch(String path, int mask, boolean watchSubtree,
 			JNotifyListener listener) throws JNotifyException
 	{
-		int wd = JNotify_macosx.addWatch(path);
+		File f;
+		try
+		{
+			f = new File(path).getCanonicalFile();
+		}
+		catch (IOException e)
+		{
+			throw new JNotifyException_macosx(
+					"Could not resolve canonical path for " + path);
+		}
+		int wd = JNotify_macosx.addWatch(f.getPath());
 		_id2Data.put(Integer.valueOf(wd), new WatchData(wd, mask, listener,
-				path, watchSubtree));
+				path, f, watchSubtree));
 		return wd;
 	}
 
@@ -199,14 +209,13 @@ public class JNotifyAdapterMacOSX implements IJNotify
 		boolean watchSubtree;
 
 		WatchData(int wd, int mask, JNotifyListener listener, String path,
-				boolean watchSubtree)
+				File pathFile, boolean watchSubtree)
 		{
 			_wd = wd;
 			_mask = mask;
 			_notifyListener = listener;
 			this.path = path;
-			File pathFile = new File(path);
-			this.fullpath = pathFile.getAbsolutePath() + "/";
+			this.fullpath = pathFile.getPath() + "/";
 			this.watchSubtree = watchSubtree;
 			paths = new TreeMap<JNFile, TreeSet<String>>();
 			jnfiles = new TreeMap<String, JNFile>();
