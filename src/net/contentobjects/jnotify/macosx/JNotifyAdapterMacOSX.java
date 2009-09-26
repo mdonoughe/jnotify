@@ -246,7 +246,6 @@ public class JNotifyAdapterMacOSX implements IJNotify
 		 */
 		private void scan(File root, boolean recursive, JNEvents events)
 		{
-			System.out.println("Scanning " + root);
 			File[] files = root.listFiles();
 			Set<Map.Entry<String, JNFile>> existingfiles = jnfiles.tailMap(root.getAbsolutePath(), false).entrySet();
 			TreeSet<String> stillAlive = null;
