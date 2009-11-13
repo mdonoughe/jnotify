@@ -23,8 +23,8 @@ all: libjnotify.dylib
 libjnotify.dylib: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	@echo gcc -dynamiclib -o libjnotify.dylib $(OBJS) $(USER_OBJS) $(LIBS) -arch ppc -arch ppc64 -arch i386 -arch x86_64
-	@gcc -dynamiclib -o libjnotify.dylib $(OBJS) $(USER_OBJS) $(LIBS) -arch ppc -arch ppc64 -arch i386 -arch x86_64
+	@echo gcc -dynamiclib -o libjnotify.dylib $(OBJS) $(USER_OBJS) $(LIBS) -arch ppc -arch ppc64 -arch i386 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
+	@gcc -dynamiclib -o libjnotify.dylib $(OBJS) $(USER_OBJS) $(LIBS) -arch ppc -arch ppc64 -arch i386 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
 	@echo 'Finished building target: $@'
 	@echo ' '
 
