@@ -28,7 +28,7 @@
     <!-- - - - - - - - - - - - - - - - - - 
           target: clean_linux                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="clean_linux">
+    <target name="clean_linux" depends="setup">
 		<delete failonerror="false" dir="${BUILD_DIR}" />
 		<ant antfile="native_build.xml" target="clean">
 			<property name="platform" value="linux"/>
@@ -39,7 +39,7 @@
     <!-- - - - - - - - - - - - - - - - - -
           target: clean_macosx
          - - - - - - - - - - - - - - - - - -->
-    <target name="clean_macosx">
+    <target name="clean_macosx" depends="setup">
 		<ant antfile="native_build.xml" target="clean">
 			<property name="platform" value="macosx"/>
 		</ant>
@@ -49,7 +49,7 @@
     <!-- - - - - - - - - - - - - - - - - - 
           target: clean_win32                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="clean_win32">
+    <target name="clean_win32" depends="setup">
 		<ant antfile="native_build.xml" target="clean">
 			<property name="platform" value="win32"/>
 		</ant>            
@@ -59,7 +59,7 @@
     <!-- - - - - - - - - - - - - - - - - - 
           target: build_native_linux                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="build_native_linux">
+    <target name="build_native_linux" depends="setup">
     	<ant antfile="native_build.xml" target="build">
     		<property name="platform" value="linux"/>
     		<property name="output" value="${BUILD_DIR}/output"/>
@@ -71,7 +71,7 @@
     <!-- - - - - - - - - - - - - - - - - -
           target: build_native_macosx
          - - - - - - - - - - - - - - - - - -->
-    <target name="build_native_macosx">
+    <target name="build_native_macosx" depends="setup">
     	<ant antfile="native_build.xml" target="build">
     		<property name="platform" value="macosx"/>
     		<property name="output" value="${BUILD_DIR}/output"/>
@@ -83,7 +83,7 @@
     <!-- - - - - - - - - - - - - - - - - - 
           target: build_native_win32                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="build_native_win32">
+    <target name="build_native_win32" depends="setup">
     	<ant antfile="native_build.xml" target="build">
     		<property name="platform" value="win32"/>
     		<property name="output" value="${BUILD_DIR}/output"/>
@@ -95,7 +95,7 @@
     <!-- - - - - - - - - - - - - - - - - - 
           target: build_java                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="build_java">
+    <target name="build_java" depends="setup">
     	<mkdir dir="${BUILD_DIR}/bin"/>
     	<mkdir dir="${BUILD_DIR}/output"/>
     	<mkdir dir="${BUILD_DIR}/dist"/>
@@ -119,7 +119,7 @@
     <!-- - - - - - - - - - - - - - - - - - 
           target: copy_res                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="pack">
+    <target name="pack" depends="setup">
     	
 		<zip destfile="${BUILD_DIR}/output/jnotify-${VERSION}-src.zip" update="true"
 			basedir="src"
