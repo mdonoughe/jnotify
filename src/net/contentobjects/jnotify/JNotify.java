@@ -60,6 +60,7 @@ public class JNotify
 		else
 		if (osName.startsWith("windows"))
 		{
+			// FIXME On Windows 7 x64 I get a classNotFoundException later when the callback is invoked. Not sure if it's the 64-bit or the Widnows 7 piece that causes the issue.
 			try
 			{
 				_instance = (IJNotify) Class.forName("net.contentobjects.jnotify.win32.JNotifyAdapterWin32").newInstance();
