@@ -541,6 +541,12 @@ public class AnotherUnitTest extends TestCase
             }
             return false;
         }
+        
+        @Override
+        public int hashCode()
+        {
+        	return toString().hashCode();
+        }
 
         @Override
         public String toString()

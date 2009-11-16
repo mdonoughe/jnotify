@@ -67,6 +67,12 @@ class Event
 		return "Event : " + _action + " wd=" + _wd + ", path=" + _path + " name=" + _name
 				+ (_name2 != null ? ", name2=" + _name2 : "");
 	}
+	
+	@Override
+	public int hashCode()
+	{
+		return toString().hashCode();
+	}
 
 	public String getAction()
 	{

@@ -74,6 +74,12 @@ public class JNotifyAdapterMacOSX implements IJNotify
 			JNFile j = (JNFile) o;
 			return j.inode == inode && j.deviceid == deviceid;
 		}
+		
+		@Override
+		public int hashCode()
+		{
+			return (inode + "," + deviceid).hashCode();
+		}
 
 		@Override
 		public String toString()
