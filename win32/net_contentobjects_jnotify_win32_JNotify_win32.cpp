@@ -42,63 +42,36 @@
 
 Win32FSHook *_win32FSHook;
 
-JavaVM *_jvm = 0;
-
 enum INIT_STATE
 {
 	NOT_INITIALIZED,
+	PRE_INITIALIZED,
 	INITIALIZED,
 	FAILED
-} _initialized = NOT_INITIALIZED;
-
-JNIEnv *_env = 0;
-jclass _clazz = 0;
-jmethodID _callback = 0;
+} 
+_initialized = NOT_INITIALIZED;
+static JavaVM *_jvm = 0;
+static jmethodID _mid;
+static jclass _clazz;
+static JNIEnv* _env;
 
 void getErrorDescription(int errorCode, WCHAR *buffer, int len);
 
 void ChangeCallbackImpl(int watchID, int action, const WCHAR* rootPath, const WCHAR* filePath)
-{
-	static Lock lock;
-	lock.lock();
-	if (_initialized == NOT_INITIALIZED)
+{	
+	if(_initialized == NOT_INITIALIZED || _initialized == FAILED)
 	{
-		bool failed = false;
-		_jvm->AttachCurrentThreadAsDaemon((void **)&_env, NULL);
-		char className[] = "net/contentobjects/jnotify/win32/JNotify_win32";
-		_clazz = _env->FindClass(className);
-		if (_clazz == NULL)
-		{
-			log("class %s not found ", className);
-			failed = true;
-		}
-		
-		if (!failed)
-		{
-		    _callback = _env->GetStaticMethodID(_clazz, "callbackProcessEvent", "(IILjava/lang/String;Ljava/lang/String;)V");
-		    if (_callback == NULL) 
-		    {
-				log("callbackProcessEvent not found");
-				failed = true;
-		    }
-		}
-	    
-	    if (!failed)
-	    {
-	    	_initialized = INITIALIZED;
-	    }
-	    else
-	    {
-	    	_initialized = FAILED;
-	    }
+		return;
 	}
-	lock.unlock();
-	if (_initialized != INITIALIZED) return;
-	
-	
-    jstring jRootPath = _env->NewString((jchar*)rootPath, wcslen(rootPath));
-    jstring jFilePath = _env->NewString((jchar*)filePath, wcslen(filePath));
-	_env->CallStaticVoidMethod(_clazz, _callback, watchID, action, jRootPath, jFilePath);
+	if(_initialized == PRE_INITIALIZED)
+	{
+		// attach daemon thread to running JVM once
+		_jvm->AttachCurrentThreadAsDaemon((void**)&_env, NULL);
+		_initialized = INITIALIZED;
+	}
+	jstring jRootPath = _env->NewString((jchar*)rootPath, wcslen(rootPath));
+	jstring jFilePath = _env->NewString((jchar*)filePath, wcslen(filePath));
+	_env->CallStaticVoidMethod(_clazz, _mid, watchID, action, jRootPath, jFilePath);
 }
 
 
@@ -112,14 +85,47 @@ void ChangeCallbackImpl(int watchID, int action, const WCHAR* rootPath, const WC
 JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_win32_JNotify_1win32_nativeInit
   (JNIEnv *env, jclass clazz)
 {
+	if(_initialized != NOT_INITIALIZED){
+		log("nativeInit called more than once");
+		return 0;
+	}
 	try
 	{
+		// initialize Java Runtime components
+		if(_jvm == NULL){
+			log("JVM is NULL");
+			throw -1;
+		}
+		
+		_env = env;
+		if(_env == NULL){
+			log("JNI Environment is NULL");
+			throw -1;
+		}
+		
+		char className[] = "net/contentobjects/jnotify/win32/JNotify_win32";
+		_clazz = _env->FindClass(className);
+		if(_clazz == NULL){
+			log("could not find net/contentobjects/jnotify/win32/JNotify_win32 in JNI env");
+			throw -1;
+		}
+		
+		_mid = _env->GetStaticMethodID(_clazz, "callbackProcessEvent", "(IILjava/lang/String;Ljava/lang/String;)V");
+		if(_mid == NULL){
+			log("could not find static method callbackProcessEvent in class net/contentobjects/jnotify/win32/JNotify_win32");
+			throw -1;
+		}
+		
 		_win32FSHook = new Win32FSHook();
 		_win32FSHook->init(&ChangeCallbackImpl);
+		
+		_initialized = PRE_INITIALIZED;
+		
 		return 0;
 	}
 	catch (int err)
 	{
+		_initialized = FAILED;
 		return err;
 	}
 }
