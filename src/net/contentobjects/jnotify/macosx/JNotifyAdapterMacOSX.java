@@ -365,7 +365,7 @@ public class JNotifyAdapterMacOSX implements IJNotify
 							}
 						}
 
-						if (!watchSubtree && recursive && files[i].isDirectory())
+						if (watchSubtree && recursive && files[i].isDirectory())
 						{
 							scan(files[i], recursive, events);
 						}
