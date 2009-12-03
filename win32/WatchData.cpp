@@ -73,7 +73,11 @@ WatchData::WatchData(const WCHAR* path, int mask, bool watchSubtree, LPOVERLAPPE
 	_overLapped.InternalHigh = 0;
 	_overLapped.Offset = 0;
 	_overLapped.OffsetHigh = 0;
+#ifdef __x86_64__
+        _overLapped.hEvent = (HANDLE) (long long)_watchId;
+#else
 	_overLapped.hEvent = (HANDLE)_watchId;
+#endif
 	
 	_watchEventObject = CreateEvent(NULL, FALSE,FALSE, NULL);
 	

@@ -142,7 +142,11 @@ int Win32FSHook::add_watch(const WCHAR* path, long notifyFilter, bool watchSubdi
 void CALLBACK Win32FSHook::changeCallback(DWORD dwErrorCode, DWORD dwNumberOfBytesTransfered,  LPOVERLAPPED lpOverlapped)
 {
 	debug("+changeCallback");
+#ifdef __x86_64__
+	int wd = (int) (long long)lpOverlapped->hEvent;
+#else
 	int wd = (int)lpOverlapped->hEvent;
+#endif
 	
 	map <int, WatchData*>::const_iterator it = _win32FSHook->_wid2WatchData.find(wd);
 	if (it == _win32FSHook->_wid2WatchData.end())
